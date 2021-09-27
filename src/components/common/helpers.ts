@@ -1,0 +1,1 @@
+export const getUniqID = (arr: any[]) => Math.max(...arr.map(el => el.key)) + 1;

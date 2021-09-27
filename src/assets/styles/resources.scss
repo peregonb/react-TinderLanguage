@@ -1,0 +1,8 @@
+@mixin r($point) {
+  @media (max-width: $point + px) {
+    @content;
+  }
+}
+
+$t: .3s;
+$font: 'TT Norms';
