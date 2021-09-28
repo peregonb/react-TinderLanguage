@@ -4,6 +4,7 @@ import React from "react";
 import {I_listItem, I_listItemSingle, I_state} from "@redux/types";
 import {connect} from 'react-redux';
 import {deleteList, setList} from "@redux/app-reducer";
+import { Link } from 'react-router-dom';
 
 const className = 'list';
 
@@ -23,7 +24,7 @@ export const PageMainListContainer: React.FC<I_props> = ({list, deleteList}) => 
             dataSource={listTitles}
             renderItem={(item, index) => (
                 <List.Item className={`${className}-item`}>
-                    <div className={`${className}-text`}>{item}</div>
+                    <Link className={`${className}-text`} to={'/edit'}>{item}</Link>
                     <div className={`${className}-icons`}>
                         <EditOutlined className={`${className}-edit`}/>
                         <Popconfirm

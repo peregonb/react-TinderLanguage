@@ -16,6 +16,27 @@
     justify-content: space-between;
     align-items: center;
   }
+
+  &-exit {
+    height: 14px;
+    width: 14px;
+    font-size: 14px;
+    padding: 0;
+    display: flex;
+    color: #ffffff;
+    position: relative;
+    margin-top: 1px;
+
+    &:after {
+      content: '';
+      height: 40px;
+      width: 40px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
 }
 
 .wrapper {
@@ -26,6 +47,7 @@
 
 .language {
   font-family: $font;
+  padding-bottom: 20px;
 
   &-wrapper {
     margin-top: 20px;
@@ -41,19 +63,22 @@
   }
 
   &-text {
+    color: #ffffff;
     font-size: 14px;
     width: calc(100% - 50px);
   }
 
   &-icons {
     width: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   &-edit,
   &-delete {
-    font-size: 16px;
-    width: 25px;
-    height: 20px;
+    font-size: 18px;
+    width: 22px;
     cursor: pointer;
   }
 
@@ -64,4 +89,103 @@
   &-delete {
     color: #ab1c2b;
   }
+}
+
+.edit {
+
+  &-title {
+    font-weight: 500;
+    font-size: 16px;
+
+    &:not(:first-of-type) {
+      margin-top: 15px;
+    }
+  }
+
+  &-input {
+    margin-top: 5px;
+  }
+
+  &-divider {
+    margin: 20px 0 10px 0;
+  }
+
+  &-inputGroup {
+    margin-top: 5px;
+
+    input {
+      width: 50% !important;
+    }
+  }
+
+  &-titleGroup{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &-table{
+    margin-top: 10px;
+  }
+
+  &-excerpt{
+    font-weight: 500;
+    margin-top: 10px;
+  }
+
+  &-button{
+    margin-top: 15px;
+  }
+}
+
+.ant-table {
+  font-size: 12px !important;
+
+  &-wrapper {
+    border: 1px solid rgba(#fff, .1);
+
+    .ant-table-tbody tr:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  &-title,
+  &-footer,
+  &-thead > tr > th,
+  &-tbody > tr > td,
+  tfoot > tr > th,
+  tfoot > tr > td {
+    padding: 5px;
+  }
+
+  &-thead {
+    .ant-table-cell {
+      font-weight: 600;
+    }
+  }
+
+  &-content {
+    overflow-x: auto;
+  }
+
+  tr {
+    td, th {
+      &:first-child {
+        padding-right: 5px !important;
+        padding-left: 10px !important;
+      }
+
+      width: 50%;
+      min-width: 50%;
+
+      &:not(:last-child) {
+        border-right: 1px solid rgba(#fff, .1);
+      }
+
+      &:last-child {
+        padding-right: 10px !important;
+      }
+    }
+  }
+
 }
