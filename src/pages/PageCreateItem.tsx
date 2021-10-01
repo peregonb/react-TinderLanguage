@@ -15,14 +15,8 @@ const columns = [
     }
 ];
 
-type T_elementData = {
-    key: string,
-    original: string,
-    translation: string,
-    excerpt: {
-        original: string,
-        translation: string
-    }
+type T_elementData = T_itemValues & {
+    key: string
 }
 
 type T_tableData = {
@@ -31,51 +25,81 @@ type T_tableData = {
     translation: string,
 }
 
+type T_itemValues = {
+    original: string,
+    translation: string,
+    excerpt: {
+        original: string,
+        translation: string
+    }
+}
+
 export const PageCreateItem = () => {
     const [nameValue, setNameValue] = useState('');
-    const [originalValue, setOriginalValue] = useState('');
-    const [translationValue, setTranslationValue] = useState('');
-    const [originalExcerptValue, setOriginalExcerptValue] = useState('');
-    const [translationExcerptValue, setTranslationExcerptValue] = useState('');
+    const [itemValues, setItemValues] = useState<T_itemValues>({
+        original: '',
+        translation: '',
+        excerpt: {
+            original: '',
+            translation: ''
+        }
+    });
+    const [validateObj, setValidateObj] = useState({
+            setValidation: false,
+            name: false,
+            data: false
+        });
     const [data, setData] = useState<T_elementData[]>([
         {
             key: '0',
-            original: 'string',
-            translation: 'string',
+            original: 'Яблоко',
+            translation: 'Apple',
             excerpt: {
-                original: 'string',
-                translation: 'string'
+                original: 'yabloko',
+                translation: ''
             }
         }
     ]);
     const [tableData, setTableData] = useState<T_tableData[]>([]);
 
     const cleanInputValues = (): void => {
-        setOriginalValue('');
-        setTranslationValue('');
-        setOriginalExcerptValue('');
-        setTranslationExcerptValue('');
+        setItemValues({
+            original: '',
+            translation: '',
+            excerpt: {
+                original: '',
+                translation: ''
+            }
+        });
     }
 
     const addElement = (): void => {
         console.table({
-            originalValue: originalValue,
-            translationValue: translationValue,
-            originalExcerptValue: originalExcerptValue,
-            translationExcerptValue: translationExcerptValue
+            originalValue: itemValues.original,
+            translationValue: itemValues.translation,
+            originalExcerptValue: itemValues.excerpt.original,
+            translationExcerptValue: itemValues.excerpt.translation
         })
 
         setData(val => [...[{
             key: getUniqID(data),
-            original: originalValue,
-            translation: translationValue,
+            original: itemValues.original,
+            translation: itemValues.translation,
             excerpt: {
-                original: originalExcerptValue,
-                translation: translationExcerptValue
+                original: itemValues.excerpt.original,
+                translation: itemValues.excerpt.translation
             }
         }], ...val])
 
         cleanInputValues();
+    }
+
+    const submitForm = (): void => {
+        setValidateObj({
+            setValidation: true,
+            name: !!nameValue,
+            data: !!data.length
+        });
     }
 
     useEffect(() => {
@@ -88,31 +112,55 @@ export const PageCreateItem = () => {
         }));
 
         console.log(getUniqID(data), data)
-    }, [data])
+    }, [data]);
+
+    useEffect(() => {
+        console.log(validateObj)
+    }, [validateObj])
 
     return (
         <div className={`${className}`}>
             <div className={`${className}-title`}>
                 Name of the list *
             </div>
-            <Input className={`${className}-input`} value={nameValue} placeholder={'Name of the list'}
+            <Input className={`${className}-input${(!validateObj.setValidation || validateObj.name) ? '' : ' error'}`}
+                   onFocus={() => setValidateObj(val => ({...val, ...{name: true}}))}
+                   value={nameValue} placeholder={'Name of the list'}
                    onInput={e => setNameValue(e.currentTarget.value)}/>
             <div className={`${className}-title`}>
                 Elements *
             </div>
             <Input.Group compact className={`${className}-inputGroup`}>
-                <Input value={originalValue} onInput={e => setOriginalValue(e.currentTarget.value)}
+                <Input value={itemValues.original}
+                       onInput={e => setItemValues(val => ({...val, ...{original: e.currentTarget.value}}))}
                        placeholder={'Original'}/>
-                <Input value={translationValue} onInput={e => setTranslationValue(e.currentTarget.value)}
+                <Input value={itemValues.translation}
+                       onInput={e => setItemValues(val => ({...val, ...{translation: e.currentTarget.value}}))}
                        placeholder={'Translation'}/>
             </Input.Group>
             <div className={`${className}-excerpt`}>
                 Extra info
             </div>
             <Input.Group compact className={`${className}-inputGroup`}>
-                <Input value={originalExcerptValue} onInput={e => setOriginalExcerptValue(e.currentTarget.value)}
+                <Input value={itemValues.excerpt.original}
+                       onInput={e => setItemValues(val => ({
+                           ...val, ...{
+                               excerpt: {
+                                   original: e.currentTarget.value,
+                                   translation: val.translation
+                               }
+                           }
+                       }))}
                        placeholder={'For original'}/>
-                <Input value={translationExcerptValue} onInput={e => setTranslationExcerptValue(e.currentTarget.value)}
+                <Input value={itemValues.excerpt.translation}
+                       onInput={e => setItemValues(val => ({
+                           ...val, ...{
+                               excerpt: {
+                                   original: val.original,
+                                   translation: e.currentTarget.value
+                               }
+                           }
+                       }))}
                        placeholder={'For translation'}/>
             </Input.Group>
             <Button className={`${className}-button`} type={'primary'} onClick={() => addElement()}>Add</Button>
@@ -121,7 +169,7 @@ export const PageCreateItem = () => {
                 <div className={`${className}-title`}>
                     {!!nameValue ? `${nameValue.trim()}:` : 'List of elements:'}
                 </div>
-                <Button type={'primary'}>Save</Button>
+                <Button onClick={() => submitForm()} type={'primary'}>Save</Button>
             </div>
             <Table className={`${className}-table`}
                    pagination={false} locale={{

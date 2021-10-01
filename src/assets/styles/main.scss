@@ -104,6 +104,12 @@
 
   &-input {
     margin-top: 5px;
+    transition: background-color;
+
+    &.error {
+      border-color: #ab1c2b;
+      transition: background-color;
+    }
   }
 
   &-divider {
@@ -118,22 +124,22 @@
     }
   }
 
-  &-titleGroup{
+  &-titleGroup {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  &-table{
+  &-table {
     margin-top: 10px;
   }
 
-  &-excerpt{
+  &-excerpt {
     font-weight: 500;
     margin-top: 10px;
   }
 
-  &-button{
+  &-button {
     margin-top: 15px;
   }
 }
