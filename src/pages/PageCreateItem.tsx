@@ -4,6 +4,7 @@ import {getUniqID} from "@components/common/helpers";
 import {I_listItemSingle, I_state, T_elementData, T_itemValues} from "@redux/types";
 import {connect} from "react-redux";
 import {setList} from "@redux/app-reducer";
+import {useHistory} from "react-router-dom";
 
 const className = 'edit';
 
@@ -61,6 +62,7 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList}) => {
         // }
     ]);
     const [tableData, setTableData] = useState<T_tableData[]>([]);
+    let history = useHistory();
 
     const cleanInputValues = (): void => {
         setItemValues({
@@ -113,7 +115,8 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList}) => {
                 words: data,
                 key: getUniqID(list),
                 id: parseInt(getUniqID(list))
-            })
+            });
+            history.push('/');
         }
     }
 
