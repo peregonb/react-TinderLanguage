@@ -1,15 +1,15 @@
 import {List, Popconfirm} from 'antd';
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
 import React from "react";
-import {I_listItem, I_listItemSingle, I_state} from "@redux/types";
+import {I_listItemSingle, I_state} from "@redux/types";
 import {connect} from 'react-redux';
 import {deleteList, setList} from "@redux/app-reducer";
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 const className = 'list';
 
 interface I_props {
-    list: I_listItem,
+    list: I_listItemSingle[],
     deleteList: (id: number) => void
 }
 

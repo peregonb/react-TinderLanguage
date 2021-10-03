@@ -104,11 +104,20 @@
 
   &-input {
     margin-top: 5px;
-    transition: background-color;
+    transition: border-color $t;
 
     &.error {
       border-color: #ab1c2b;
-      transition: background-color;
+      transition: border-color $t;
+    }
+  }
+
+  &-placeholder{
+    transition: color $t;
+
+    &.error {
+      color: #ab1c2b;
+      transition: color $t;
     }
   }
 

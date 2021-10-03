@@ -1,5 +1,5 @@
 export interface I_appReducer {
-    list: I_listItem
+    list: I_listItemSingle[]
 }
 
 export interface I_state {
@@ -7,10 +7,22 @@ export interface I_state {
 }
 
 export interface I_listItemSingle {
-    name: string,
-    words: string[][],
     id: number,
     key: string
+    name: string,
+    words: T_elementData[],
 }
 
-export type I_listItem = I_listItemSingle[];
+export type T_elementData = T_itemValues & {
+    key: string,
+    id: string
+}
+
+export type T_itemValues = {
+    original: string,
+    translation: string,
+    excerpt: {
+        original: string,
+        translation: string
+    }
+}

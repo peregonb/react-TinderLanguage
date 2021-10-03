@@ -1,4 +1,4 @@
-import {I_listItem} from "@redux/types";
+import {I_listItemSingle} from "@redux/types";
 
 const SET_LIST = 'SET_LIST';
 const DELETE_LIST = 'DELETE_LIST';
@@ -7,13 +7,55 @@ let initialState = {
     list: [
         {
             "name": "Apartment stuff",
-            "words": [["bed", "кровать"], ["table", "стол"], ["carpet", "кровать"]],
+            "words": [
+                {
+                    key: '0',
+                    id: '0',
+                    original: 'Яблоко',
+                    translation: 'Apple',
+                    excerpt: {
+                        original: 'yabloko',
+                        translation: ''
+                    }
+                },
+                {
+                    key: '1',
+                    id: '1',
+                    original: 'Яблоко',
+                    translation: 'Apple',
+                    excerpt: {
+                        original: 'yabloko',
+                        translation: ''
+                    }
+                }
+            ],
             "id": 0,
             "key": "0"
         },
         {
             "name": "Garden stuff",
-            "words": [["shovel", "лопата"], ["chainsaw", "бензопила"], ["brick", "кирпич"]],
+            "words": [
+                {
+                    key: '0',
+                    id: '0',
+                    original: 'Яблоко',
+                    translation: 'Apple',
+                    excerpt: {
+                        original: 'yabloko',
+                        translation: ''
+                    }
+                },
+                {
+                    key: '1',
+                    id: '1',
+                    original: 'Яблоко',
+                    translation: 'Apple',
+                    excerpt: {
+                        original: 'yabloko',
+                        translation: ''
+                    }
+                }
+            ],
             "id": 1,
             "key": "1"
         }
@@ -22,7 +64,7 @@ let initialState = {
 
 export interface I_setList {
     type: typeof SET_LIST
-    list: I_listItem
+    listItem: I_listItemSingle
 }
 
 export interface I_deleteList {
@@ -37,11 +79,10 @@ const appReducer = (state = initialState, action: actionType) => {
         case SET_LIST:
             return {
                 ...state,
-                list: action.list,
+                list: [...state.list, action.listItem],
             };
 
         case DELETE_LIST:
-            console.log('delete!!', state.list.filter(el => el.id !== action.id))
             return {
                 ...state,
                 list: state.list.filter(el => el.id !== action.id)
@@ -52,10 +93,10 @@ const appReducer = (state = initialState, action: actionType) => {
     }
 };
 
-export const setList = (list: I_listItem): I_setList => {
+export const setList = (listItem: I_listItemSingle): I_setList => {
     return {
         type: SET_LIST,
-        list
+        listItem
     }
 };
 
