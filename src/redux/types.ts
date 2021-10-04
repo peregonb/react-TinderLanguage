@@ -15,7 +15,7 @@ export interface I_listItemSingle {
 
 export type T_elementData = T_itemValues & {
     key: string,
-    id: string
+    id: number
 }
 
 export type T_itemValues = {

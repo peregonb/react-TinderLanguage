@@ -112,7 +112,7 @@
     }
   }
 
-  &-placeholder{
+  &-placeholder {
     transition: color $t;
 
     &.error {
@@ -139,6 +139,13 @@
     align-items: center;
   }
 
+  &-buttonGroup {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 15px;
+  }
+
   &-table {
     margin-top: 10px;
   }
@@ -149,7 +156,9 @@
   }
 
   &-button {
-    margin-top: 15px;
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
   }
 }
 

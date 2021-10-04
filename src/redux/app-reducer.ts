@@ -10,7 +10,7 @@ let initialState = {
             "words": [
                 {
                     key: '0',
-                    id: '0',
+                    id: 0,
                     original: 'Яблоко',
                     translation: 'Apple',
                     excerpt: {
@@ -20,7 +20,7 @@ let initialState = {
                 },
                 {
                     key: '1',
-                    id: '1',
+                    id: 1,
                     original: 'Яблоко',
                     translation: 'Apple',
                     excerpt: {
@@ -37,7 +37,7 @@ let initialState = {
             "words": [
                 {
                     key: '0',
-                    id: '0',
+                    id: 3,
                     original: 'Яблоко',
                     translation: 'Apple',
                     excerpt: {
@@ -47,7 +47,7 @@ let initialState = {
                 },
                 {
                     key: '1',
-                    id: '1',
+                    id: 4,
                     original: 'Яблоко',
                     translation: 'Apple',
                     excerpt: {

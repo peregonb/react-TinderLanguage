@@ -4,7 +4,9 @@ import {getUniqID} from "@components/common/helpers";
 import {I_listItemSingle, I_state, T_elementData, T_itemValues} from "@redux/types";
 import {connect} from "react-redux";
 import {setList} from "@redux/app-reducer";
-import {useHistory} from "react-router-dom";
+import {useHistory, withRouter} from "react-router-dom";
+import {RouteComponentProps} from "react-router";
+import {compose} from "redux";
 
 const className = 'edit';
 
@@ -21,11 +23,16 @@ const columns = [
 
 type T_tableData = {
     key: string,
+    id: number,
     original: string,
     translation: string,
 }
 
-interface I_propTypes {
+type T_routeTypes = {
+    itemId?: string
+}
+
+interface I_propTypes extends RouteComponentProps<T_routeTypes> {
     list: I_listItemSingle[],
     setList: (list: I_listItemSingle) => void
 }
@@ -49,19 +56,12 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList}) => {
         showErrorOriginal: false,
         showErrorTranslation: false
     });
-    const [data, setData] = useState<T_elementData[]>([
-        // {
-        //     key: '0',
-        //     id: '0',
-        //     original: 'Яблоко',
-        //     translation: 'Apple',
-        //     excerpt: {
-        //         original: 'yabloko',
-        //         translation: ''
-        //     }
-        // }
-    ]);
+    const [data, setData] = useState<T_elementData[]>([]);
     const [tableData, setTableData] = useState<T_tableData[]>([]);
+    const [isEdit, setIsEdit] = useState<{ state: boolean, id: null | number }>({
+        state: false,
+        id: null
+    });
     let history = useHistory();
 
     const cleanInputValues = (): void => {
@@ -75,31 +75,61 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList}) => {
         });
     }
 
+    const cleanElementInputValues = (): void => {
+        cleanInputValues();
+        setValidateElement({
+            showErrorOriginal: false,
+            showErrorTranslation: false
+        });
+    }
+
     const addElement = (): void => {
         setValidateElement({
             showErrorOriginal: !itemValues.original,
             showErrorTranslation: !itemValues.translation
         });
 
-        if (!!itemValues.original.trim() && !!itemValues.translation.trim()) {
-            setData(val => [...[{
-                key: getUniqID(data),
-                id: getUniqID(data),
-                original: itemValues.original,
-                translation: itemValues.translation,
-                excerpt: {
-                    original: itemValues.excerpt.original,
-                    translation: itemValues.excerpt.translation
-                }
-            }], ...val]);
+        if (isEdit.state) {
+            if (!!itemValues.original.trim() && !!itemValues.translation.trim()) {
+                setData(val => (
+                    val.map(el => el.id === isEdit.id ? {
+                        ...el,
+                        original: itemValues.original,
+                        translation: itemValues.translation,
+                        excerpt: {
+                            original: itemValues.excerpt.original,
+                            translation: itemValues.excerpt.translation
+                        }
+                    } : el)
+                ));
 
-            cleanInputValues();
+                cleanElementInputValues();
+            }
 
-            setValidateElement({
-                showErrorOriginal: false,
-                showErrorTranslation: false
-            });
+            setIsEdit({state: false, id: null});
+        } else {
+            if (!!itemValues.original.trim() && !!itemValues.translation.trim()) {
+                setData(val => {
+                    return [...[{
+                        key: getUniqID(val),
+                        id: parseInt(getUniqID(val)),
+                        original: itemValues.original,
+                        translation: itemValues.translation,
+                        excerpt: {
+                            original: itemValues.excerpt.original,
+                            translation: itemValues.excerpt.translation
+                        }
+                    }], ...val];
+                });
+                cleanElementInputValues();
+            }
         }
+    }
+
+    const removeElement = (): void => {
+        setData(val => (val.filter(el => el.id !== isEdit.id)));
+        cleanElementInputValues();
+        setIsEdit({state: false, id: null});
     }
 
     const submitForm = (): void => {
@@ -116,6 +146,7 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList}) => {
                 key: getUniqID(list),
                 id: parseInt(getUniqID(list))
             });
+
             history.push('/');
         }
     }
@@ -124,6 +155,7 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList}) => {
         setTableData(data.map(el => {
             return {
                 key: el.key,
+                id: el.id,
                 original: `${el.original}${!!el.excerpt.original ? ` (${el.excerpt.original})` : ''}`,
                 translation: `${el.translation}${!!el.excerpt.translation ? ` (${el.excerpt.translation})` : ''}`
             }
@@ -178,7 +210,15 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList}) => {
                        })}
                        placeholder={'For translation'}/>
             </Input.Group>
-            <Button className={`${className}-button`} type={'primary'} onClick={() => addElement()}>Add</Button>
+            <div className={`${className}-buttonGroup`}>
+                <Button className={`${className}-button`} type={'primary'} onClick={() => addElement()}>
+                    {isEdit.state ? 'Edit' : 'Add'}
+                </Button>
+                {isEdit.state &&
+                <Button className={`${className}-button`} type={'primary'} danger onClick={() => removeElement()}>
+                    Delete
+                </Button>}
+            </div>
             <Divider className={`${className}-divider`}/>
             <div className={`${className}-titleGroup`}>
                 <div className={`${className}-title`}>
@@ -188,22 +228,40 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList}) => {
             </div>
             <Table className={`${className}-table`}
                    pagination={false} locale={{
-                emptyText: <Empty description={<div
-                    className={`${className}-placeholder${(!validateList.setValidation || validateList.data) ? '' : ' error'}`}>Please,
-                    add elements to the list</div>}
-                                  image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+                emptyText: <Empty description={
+                    <div
+                        className={`${className}-placeholder${(!validateList.setValidation || validateList.data) ? '' : ' error'}`}>
+                        Please, add elements to the list</div>
+                } image={Empty.PRESENTED_IMAGE_SIMPLE}/>
             }}
+                   onRow={record => ({
+                       onClick: () => {
+                           setIsEdit({state: true, id: record.id});
+                           setItemValues({
+                               original: record.original.match(/ \(/g) ? record.original.split(' (')[0] : record.original,
+                               translation: record.translation.match(/ \(/g) ? record.translation.split(' (')[0] : record.translation,
+                               excerpt: {
+                                   original: record.original.match(/ \(/g) ? record.original.split(' (')[1].slice(0, -1) : '',
+                                   translation: record.translation.match(/ \(/g) ? record.translation.split(' (')[1].slice(0, -1) : '',
+                               }
+                           });
+                       }
+                   })}
                    columns={columns} dataSource={tableData}
                    size="small"/>
         </div>
     )
-}
+};
 
 
 let mapStateToProps = (state: I_state) => {
-    return {
-        list: state.app.list,
+        return {
+            list: state.app.list,
+        }
     }
-};
+;
 
-export const PageCreateItem = connect(mapStateToProps, {setList})(PageCreateItemContainer);
+export const PageCreateItem = compose(
+    connect(mapStateToProps, {setList}),
+    withRouter
+)(PageCreateItemContainer);

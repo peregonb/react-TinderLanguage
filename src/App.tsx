@@ -20,7 +20,7 @@ function App() {
                 <Route path={process.env.PUBLIC_URL + '/'} exact render={() => <PageMainList/>}/>
                 <Route path={process.env.PUBLIC_URL + '/create'} render={() => <PageCreateItem/>}/>
                 <Route path={process.env.PUBLIC_URL + '/play:itemId?'} render={() => <PageCards/>}/>
-                <Route path={process.env.PUBLIC_URL + '/edit:itemId?'} render={() => <PageEditItem/>}/>
+                <Route path={process.env.PUBLIC_URL + '/edit/id:itemId?'} render={() => <PageCreateItem/>}/>
             </Layout>
         </Layout>
     );
