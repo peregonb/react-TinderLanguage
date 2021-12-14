@@ -1,9 +1,9 @@
 import {List, Popconfirm} from 'antd';
 import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import React from "react";
+import React, {useEffect} from "react";
 import {I_listItemSingle, I_state} from "@redux/types";
 import {connect} from 'react-redux';
-import {deleteList, setList} from "@redux/app-reducer";
+import {deleteList, setHeaderTitle, setList} from "@redux/app-reducer";
 import {Link} from 'react-router-dom';
 
 const className = 'list';
@@ -11,10 +11,12 @@ const className = 'list';
 interface I_props {
     list: I_listItemSingle[],
     deleteList: (id: number) => void
+    setHeaderTitle: (headline: string) => void
 }
 
-export const PageMainListContainer: React.FC<I_props> = ({list, deleteList}) => {
+export const PageMainListContainer: React.FC<I_props> = ({list, deleteList, setHeaderTitle}) => {
     const listTitles = [...list.map((el: I_listItemSingle) => el.name)];
+    useEffect(() => setHeaderTitle("Lists"), [])
 
     return (
         <List
@@ -24,9 +26,11 @@ export const PageMainListContainer: React.FC<I_props> = ({list, deleteList}) => 
             dataSource={listTitles}
             renderItem={(item, index) => (
                 <List.Item className={`${className}-item`}>
-                    <Link className={`${className}-text`} to={'/edit'}>{item}</Link>
+                    <Link to={`/play/id${list[index].id}`} className={`${className}-text`}>{item}</Link>
                     <div className={`${className}-icons`}>
-                        <EditOutlined className={`${className}-edit`}/>
+                        <Link className={`${className}-edit-link`} to={`/edit/id${list[index].id}`}>
+                            <EditOutlined className={`${className}-edit`}/>
+                        </Link>
                         <Popconfirm
                             title="Are you sure to delete this list?"
                             onConfirm={() => deleteList(index)}
@@ -49,4 +53,6 @@ let mapStateToProps = (state: I_state) => {
     }
 };
 
-export const PageMainList = connect(mapStateToProps, {setList, deleteList})(PageMainListContainer);
+export const PageMainList = connect(
+    mapStateToProps, {setList, deleteList, setHeaderTitle}
+)(PageMainListContainer);

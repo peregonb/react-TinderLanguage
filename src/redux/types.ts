@@ -1,4 +1,5 @@
 export interface I_appReducer {
+    headline: string,
     list: I_listItemSingle[]
 }
 
