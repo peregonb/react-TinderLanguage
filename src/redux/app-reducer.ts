@@ -9,26 +9,86 @@ let initialState = {
     headline: "",
     list: [
         {
-            "name": "Apartment stuff",
+            "name": "Fruits",
             "words": [
                 {
                     key: '0',
                     id: 0,
-                    original: 'Яблоко',
-                    translation: 'Apple',
+                    original: 'Apple',
+                    translation: '苹果',
                     excerpt: {
-                        original: 'yabloko',
-                        translation: ''
+                        original: '',
+                        translation: 'Píngguǒ'
                     }
                 },
                 {
                     key: '1',
                     id: 1,
-                    original: 'Яблоко',
-                    translation: 'Apple',
+                    original: 'Pear',
+                    translation: '梨',
                     excerpt: {
-                        original: 'yabloko',
-                        translation: ''
+                        original: '',
+                        translation: 'Lí'
+                    }
+                },
+                {
+                    key: '2',
+                    id: 2,
+                    original: 'Strawberry',
+                    translation: '草莓',
+                    excerpt: {
+                        original: '',
+                        translation: 'Cǎoméi'
+                    }
+                },
+                {
+                    key: '3',
+                    id: 3,
+                    original: 'Orange',
+                    translation: '橘子',
+                    excerpt: {
+                        original: '',
+                        translation: 'Júzi'
+                    }
+                },
+                {
+                    key: '4',
+                    id: 4,
+                    original: 'Banana',
+                    translation: '香蕉',
+                    excerpt: {
+                        original: '',
+                        translation: 'Xiāngjiāo'
+                    }
+                },
+                {
+                    key: '5',
+                    id: 5,
+                    original: 'Pineapple',
+                    translation: '菠萝',
+                    excerpt: {
+                        original: '',
+                        translation: 'Bōluó'
+                    }
+                },
+                {
+                    key: '6',
+                    id: 6,
+                    original: 'Blueberry',
+                    translation: '蓝莓',
+                    excerpt: {
+                        original: '',
+                        translation: 'Lánméi'
+                    }
+                },
+                {
+                    key: '7',
+                    id: 7,
+                    original: 'Cherry',
+                    translation: '樱桃',
+                    excerpt: {
+                        original: '',
+                        translation: 'Yīngtáo'
                     }
                 }
             ],
@@ -45,17 +105,17 @@ let initialState = {
                     translation: 'Apple',
                     excerpt: {
                         original: 'yabloko',
-                        translation: ''
+                        translation: 'эпл'
                     }
                 },
                 {
                     key: '1',
                     id: 4,
-                    original: 'Яблоко',
-                    translation: 'Apple',
+                    original: 'Груша',
+                    translation: 'Pear',
                     excerpt: {
-                        original: 'yabloko',
-                        translation: ''
+                        original: 'grusha',
+                        translation: 'пир'
                     }
                 }
             ],

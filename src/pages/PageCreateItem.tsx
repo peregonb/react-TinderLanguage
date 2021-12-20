@@ -141,9 +141,12 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeL
             name: !!nameValue,
             data: !!data.length
         });
+        console.log(1)
 
         if (!!nameValue.trim() && !!data.length) {
+            console.log(2)
             if (!!isListItemEdit) {
+                console.log(3)
                 changeList({
                     name: nameValue,
                     words: data,
@@ -151,6 +154,7 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeL
                     id: parseInt(isListItemEdit)
                 }, isListItemEdit);
             } else {
+                console.log(4)
                 setList({
                     name: nameValue,
                     words: data,
@@ -238,7 +242,20 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeL
                 <div className={`${className}-title`}>
                     {!!nameValue ? `${nameValue.trim()}:` : 'List of elements:'}
                 </div>
-                <Button onClick={() => submitForm()} type={'primary'}>Save</Button>
+                <div className={`${className}-buttons`}>
+                    <Button onClick={() => {
+                        setData((val: any) => val.map((el: T_elementData) => ({
+                            ...el,
+                            original: el.translation,
+                            translation: el.original,
+                            excerpt: {
+                                original: el.excerpt.translation,
+                                translation: el.excerpt.original
+                            }
+                        })))
+                    }} type={'primary'}>Switch</Button>
+                    <Button onClick={() => submitForm()} type={'primary'}>Save</Button>
+                </div>
             </div>
             <Table className={`${className}-table`}
                    pagination={false} locale={{
