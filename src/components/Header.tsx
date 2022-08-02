@@ -15,7 +15,9 @@ const HeaderContainer: React.FC<IHeaderProps> = ({headline}) => {
     const HeaderButton: React.FC = () => {
         return (
             useLocation().pathname === '/' ?
-                <Link to={'/create'}><Button type={'primary'}>Create List</Button></Link> :
+                <Link to={'/create'}>
+                    <Button type={'primary'}>Create List</Button>
+                </Link> :
                 <Link to={'/'}>
                     <div className={`${className}-exit icon-close`}/>
                 </Link>

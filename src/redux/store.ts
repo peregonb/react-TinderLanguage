@@ -2,7 +2,7 @@ import {combineReducers, createStore} from "redux";
 import appReducer from "./app-reducer";
 import {I_state} from "@redux/types";
 
-let reducers = combineReducers({
+const reducers = combineReducers({
     app: appReducer
 });
 
@@ -33,4 +33,5 @@ window.store = store;
 
 store.subscribe(() => saveToLocalStorage(store.getState()));
 
+export type AppType = ReturnType<typeof reducers>;
 export default store;
