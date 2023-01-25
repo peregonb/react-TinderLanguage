@@ -1,5 +1,5 @@
 {
-  "name": "react-gym-stats",
+  "name": "react-tinder-language",
   "version": "0.1.0",
   "private": true,
   "main": "src/index.tsx",
@@ -8,8 +8,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "antd": "^4.4.3",
-    "craco-less": "^1.17.1",
+    "antd": "^5.1.6",
     "lodash": "^4.17.21",
     "mime": "^1.6.0",
     "module-alias": "^2.2.2",

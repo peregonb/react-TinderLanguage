@@ -281,7 +281,7 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeL
                    columns={columns} dataSource={tableData}
                    size="small"/>
         </div>
-    )
+    );
 };
 
 
