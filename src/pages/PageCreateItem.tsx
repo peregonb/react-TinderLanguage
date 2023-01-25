@@ -1,11 +1,11 @@
-import {Button, Divider, Empty, Input, Table} from "antd";
-import {FC, useEffect, useState} from "react";
-import {getUniqID} from "@components/common/helpers";
-import {I_listItemSingle, I_state, T_elementData, T_itemValues} from "@redux/types";
-import {connect} from "react-redux";
-import {changeList, setHeaderTitle, setList} from "@redux/app-reducer";
-import {useHistory, withRouter} from "react-router-dom";
-import {RouteComponentProps} from "react-router";
+import {FC, useEffect, useState} from 'react';
+import {Button, Divider, Empty, Input, Table} from 'antd';
+import {getUniqID} from '@components/common/helpers';
+import {I_listItemSingle, I_state, T_elementData, T_itemValues} from '@redux/types';
+import {connect} from 'react-redux';
+import {changeList, setHeaderTitle, setList} from '@redux/app-reducer';
+import {useHistory, withRouter} from 'react-router-dom';
+import {RouteComponentProps} from 'react-router';
 
 const className = 'edit';
 
@@ -279,7 +279,7 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeL
                        }
                    })}
                    columns={columns} dataSource={tableData}
-                   size="small"/>
+                   size={'small'}/>
         </div>
     );
 };

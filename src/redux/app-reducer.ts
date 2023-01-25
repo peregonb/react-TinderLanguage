@@ -1,4 +1,4 @@
-import {I_listItemSingle} from "@redux/types";
+import {I_listItemSingle} from '@redux/types';
 
 const SET_HEADER_TITLE = 'SET_HEADER_TITLE';
 const SET_LIST = 'SET_LIST';
@@ -6,11 +6,11 @@ const CHANGE_LIST = 'CHANGE_LIST';
 const DELETE_LIST = 'DELETE_LIST';
 
 let initialState = {
-    headline: "",
+    headline: '',
     list: [
         {
-            "name": "Fruits",
-            "words": [
+            'name': 'Fruits',
+            'words': [
                 {
                     key: '0',
                     id: 0,
@@ -92,12 +92,12 @@ let initialState = {
                     }
                 }
             ],
-            "id": 0,
-            "key": "0"
+            'id': 0,
+            'key': "0"
         },
         {
-            "name": "Garden stuff",
-            "words": [
+            'name': 'Garden stuff',
+            'words': [
                 {
                     key: '0',
                     id: 3,
@@ -119,8 +119,8 @@ let initialState = {
                     }
                 }
             ],
-            "id": 1,
-            "key": "1"
+            'id': 1,
+            'key': '1'
         }
     ]
 };

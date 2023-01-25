@@ -1,9 +1,9 @@
-import { FC, useCallback, useEffect, useState } from "react";
-import { RouteComponentProps } from "react-router";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { I_listItemSingle, I_state, T_elementData } from "@redux/types";
-import { setHeaderTitle } from "@redux/app-reducer";
+import { FC, useCallback, useEffect, useState } from 'react';
+import { RouteComponentProps } from 'react-router';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { I_listItemSingle, I_state, T_elementData } from '@redux/types';
+import { setHeaderTitle } from '@redux/app-reducer';
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons'
 
 type T_routeTypes = {

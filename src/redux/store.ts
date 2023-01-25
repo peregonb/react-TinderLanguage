@@ -1,6 +1,6 @@
-import {combineReducers, createStore} from "redux";
-import appReducer from "./app-reducer";
-import {I_state} from "@redux/types";
+import {combineReducers, createStore} from 'redux';
+import appReducer from './app-reducer';
+import {I_state} from '@redux/types';
 
 const reducers = combineReducers({
     app: appReducer
@@ -9,14 +9,14 @@ const reducers = combineReducers({
 const saveToLocalStorage = (state: I_state) => {
     try {
         const serialisedState = JSON.stringify(state);
-        localStorage.setItem("persistentState", serialisedState);
+        localStorage.setItem('persistentState', serialisedState);
     } catch (e) {
         console.warn(e);
     }
 };
 const loadFromLocalStorage = () => {
     try {
-        const serialisedState = localStorage.getItem("persistentState");
+        const serialisedState = localStorage.getItem('persistentState');
         if (serialisedState === null) return undefined;
         return JSON.parse(serialisedState);
     } catch (e) {
