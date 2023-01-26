@@ -1,34 +1,37 @@
+import React, {FC, memo} from 'react';
 import {Button} from 'antd';
-import React from 'react';
-import {connect} from 'react-redux';
-import {Link, useLocation} from "react-router-dom";
-import {I_state} from "@redux/types";
-
-interface IHeaderProps {
-    headline: string,
-}
+import {Link, useLocation} from 'react-router-dom';
+import useSelector from "@hooks/useSelector";
 
 const className = 'header';
 
-const HeaderContainer: React.FC<IHeaderProps> = ({headline}) => {
+const HeaderButton: FC = () => {
+    const {pathname} = useLocation();
 
-    const HeaderButton: React.FC = () => {
-        return (
-            useLocation().pathname === '/' ?
+    switch (pathname) {
+        case '/':
+            return (
                 <Link to={'/create'}>
                     <Button type={'primary'}>Create List</Button>
-                </Link> :
+                </Link>
+            )
+        default:
+            return (
                 <Link to={'/'}>
                     <div className={`${className}-exit icon-close`}/>
                 </Link>
-        )
+            )
     }
+}
+
+const Header: FC = () => {
+    const {headline} = useSelector(state => state.app);
 
     return (
         <div className={`${className}`}>
             <div className={`${className}-wrapper wrapper`}>
                 <div className={`${className}-headline`}>
-                    { headline }
+                    {headline}
                 </div>
                 <HeaderButton/>
             </div>
@@ -36,12 +39,4 @@ const HeaderContainer: React.FC<IHeaderProps> = ({headline}) => {
     )
 }
 
-let mapStateToProps = (state: I_state) => {
-    return {
-        headline: state.app.headline
-    }
-};
-
-export const Header = connect(
-    mapStateToProps, {}
-)(HeaderContainer);
+export default memo(Header);

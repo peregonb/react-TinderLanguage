@@ -1,11 +1,11 @@
-import {FC, useEffect, useState} from 'react';
+import {FC, memo, useCallback, useEffect, useState} from 'react';
 import {Button, Divider, Empty, Input, Table} from 'antd';
 import {getUniqID} from '@components/common/helpers';
-import {I_listItemSingle, I_state, T_elementData, T_itemValues} from '@redux/types';
-import {connect} from 'react-redux';
+import {T_elementData, T_itemValues} from '@redux/types';
+import {useDispatch} from 'react-redux';
 import {changeList, setHeaderTitle, setList} from '@redux/app-reducer';
-import {useHistory, withRouter} from 'react-router-dom';
-import {RouteComponentProps} from 'react-router';
+import {useHistory, useRouteMatch} from 'react-router-dom';
+import useSelector from '@hooks/useSelector';
 
 const className = 'edit';
 
@@ -31,108 +31,113 @@ type T_routeTypes = {
     itemId?: string
 }
 
-interface I_propTypes extends RouteComponentProps<T_routeTypes> {
-    list: I_listItemSingle[],
-    setList: (list: I_listItemSingle) => void,
-    changeList: (list: I_listItemSingle, id: string) => void
-    setHeaderTitle: (headline: string) => void
+type T_validateElement = {
+    showErrorOriginal: boolean,
+    showErrorTranslation: boolean
 }
 
-export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeList, setHeaderTitle, match}) => {
-    const isListItemEdit = match?.params?.itemId;
-    const targetListItemTarget = list.filter(el => el.key === match.params.itemId)[0];
-    const [nameValue, setNameValue] = useState(!!isListItemEdit ? targetListItemTarget.name : '');
-    const [itemValues, setItemValues] = useState<T_itemValues>({
+type T_validateList = {
+    setValidation: boolean,
+    name: boolean,
+    data: boolean
+}
+
+type T_editState = {
+    state: boolean,
+    id: null | number
+}
+
+const DEFAULT_ITEM_VALUES: T_itemValues = {
+    original: '',
+    translation: '',
+    excerpt: {
         original: '',
-        translation: '',
-        excerpt: {
-            original: '',
-            translation: ''
-        }
-    });
-    const [validateList, setValidateList] = useState({
-        setValidation: false,
-        name: false,
-        data: false
-    });
-    const [validateElement, setValidateElement] = useState({
-        showErrorOriginal: false,
-        showErrorTranslation: false
-    });
-    const [data, setData] = useState<T_elementData[]>(!!isListItemEdit ? targetListItemTarget.words : []);
+        translation: ''
+    }
+};
+const DEFAULT_VALIDATE_ELEMENT: T_validateElement = {
+    showErrorOriginal: false,
+    showErrorTranslation: false
+};
+const DEFAULT_VALIDATE_LIST: T_validateList = {
+    setValidation: false,
+    name: false,
+    data: false
+};
+const DEFAULT_EDIT_STATE: T_editState = {
+    state: false,
+    id: null
+};
+
+export const PageCreateItem: FC = () => {
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const {params} = useRouteMatch<T_routeTypes>();
+    const {list} = useSelector(state => state.app);
+
+    const targetListItemTarget = list.find(el => el.key === params.itemId);
+    const [nameValue, setNameValue] = useState(!!params.itemId ? targetListItemTarget!.name : '');
+    const [itemValues, setItemValues] = useState<T_itemValues>(DEFAULT_ITEM_VALUES);
+    const [validateList, setValidateList] = useState<T_validateList>(DEFAULT_VALIDATE_LIST);
+    const [validateElement, setValidateElement] = useState<T_validateElement>(DEFAULT_VALIDATE_ELEMENT);
+    const [data, setData] = useState<T_elementData[]>(!!params.itemId ? targetListItemTarget!.words : []);
     const [tableData, setTableData] = useState<T_tableData[]>([]);
-    const [isEdit, setIsEdit] = useState<{ state: boolean, id: null | number }>({
-        state: false,
-        id: null
-    });
-    let history = useHistory();
+    const [isEdit, setIsEdit] = useState<T_editState>(DEFAULT_EDIT_STATE);
+
 
     const cleanInputValues = (): void => {
-        setItemValues({
-            original: '',
-            translation: '',
-            excerpt: {
-                original: '',
-                translation: ''
-            }
-        });
+        setItemValues(DEFAULT_ITEM_VALUES);
     }
 
     const cleanElementInputValues = (): void => {
         cleanInputValues();
-        setValidateElement({
-            showErrorOriginal: false,
-            showErrorTranslation: false
-        });
+        setValidateElement(DEFAULT_VALIDATE_ELEMENT);
     }
 
-    const addElement = (): void => {
-        setValidateElement({
-            showErrorOriginal: !itemValues.original,
-            showErrorTranslation: !itemValues.translation
-        });
+    const validateForm = useCallback((): boolean => {
+        const elementsData: T_validateElement = {
+            showErrorOriginal: !itemValues.original.trim().length,
+            showErrorTranslation: !itemValues.translation.trim().length
+        };
 
-        if (isEdit.state) {
-            if (!!itemValues.original.trim() && !!itemValues.translation.trim()) {
-                setData(val => (
-                    val.map(el => el.id === isEdit.id ? {
-                        ...el,
-                        original: itemValues.original,
-                        translation: itemValues.translation,
-                        excerpt: {
-                            original: itemValues.excerpt.original,
-                            translation: itemValues.excerpt.translation
-                        }
-                    } : el)
-                ));
+        setValidateElement(elementsData);
 
-                cleanElementInputValues();
-            }
+        return !Object.values(elementsData).includes(true);
+    }, [itemValues]);
 
-            setIsEdit({state: false, id: null});
-        } else {
-            if (!!itemValues.original.trim() && !!itemValues.translation.trim()) {
-                setData(val => {
-                    return [...[{
-                        key: getUniqID(val),
-                        id: parseInt(getUniqID(val)),
-                        original: itemValues.original,
-                        translation: itemValues.translation,
-                        excerpt: {
-                            original: itemValues.excerpt.original,
-                            translation: itemValues.excerpt.translation
-                        }
-                    }], ...val];
-                });
-                cleanElementInputValues();
+    const addElement = () => {
+        const commonData: T_itemValues = {
+            original: itemValues.original,
+            translation: itemValues.translation,
+            excerpt: {
+                original: itemValues.excerpt.original,
+                translation: itemValues.excerpt.translation
             }
         }
-    }
+
+        if (isEdit.state) {
+            setData(val => (
+                val.map(el => el.id === isEdit.id ? {
+                    ...el,
+                    ...commonData
+                } : el)
+            ));
+            setIsEdit(DEFAULT_EDIT_STATE);
+        } else {
+            setData(val => [...[{
+                key: getUniqID(val),
+                id: parseInt(getUniqID(val)),
+                ...commonData
+            }], ...val]);
+        }
+
+        cleanElementInputValues();
+    };
 
     const removeElement = (): void => {
         setData(val => (val.filter(el => el.id !== isEdit.id)));
         cleanElementInputValues();
-        setIsEdit({state: false, id: null});
+        setIsEdit(DEFAULT_EDIT_STATE);
     }
 
     const submitForm = (): void => {
@@ -141,26 +146,22 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeL
             name: !!nameValue,
             data: !!data.length
         });
-        console.log(1)
 
         if (!!nameValue.trim() && !!data.length) {
-            console.log(2)
-            if (!!isListItemEdit) {
-                console.log(3)
-                changeList({
+            if (!!params.itemId) {
+                dispatch(changeList({
                     name: nameValue,
                     words: data,
-                    key: isListItemEdit,
-                    id: parseInt(isListItemEdit)
-                }, isListItemEdit);
+                    key: params.itemId,
+                    id: parseInt(params.itemId)
+                }, params.itemId));
             } else {
-                console.log(4)
-                setList({
+                dispatch(setList({
                     name: nameValue,
                     words: data,
                     key: getUniqID(list),
                     id: parseInt(getUniqID(list))
-                });
+                }));
             }
 
             history.push('/');
@@ -168,17 +169,17 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeL
     }
 
     useEffect(() => {
-        setTableData(data.map(el => {
-            return {
-                key: el.key,
-                id: el.id,
-                original: `${el.original}${!!el.excerpt.original ? ` (${el.excerpt.original})` : ''}`,
-                translation: `${el.translation}${!!el.excerpt.translation ? ` (${el.excerpt.translation})` : ''}`
-            }
-        }));
+        setTableData(data.map(el => ({
+            key: el.key,
+            id: el.id,
+            original: `${el.original}${!!el.excerpt.original ? ` (${el.excerpt.original})` : ''}`,
+            translation: `${el.translation}${!!el.excerpt.translation ? ` (${el.excerpt.translation})` : ''}`
+        })));
     }, [data]);
 
-    useEffect(() => setHeaderTitle(!!isListItemEdit ? 'Edit list' : 'Create list'), [])
+    useEffect(() => {
+        dispatch(setHeaderTitle(!!params.itemId ? 'Edit list' : 'Create list'));
+    }, []);
 
     return (
         <div className={`${className}`}>
@@ -229,7 +230,9 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeL
                        placeholder={'For translation'}/>
             </Input.Group>
             <div className={`${className}-buttonGroup`}>
-                <Button className={`${className}-button`} type={'primary'} onClick={() => addElement()}>
+                <Button className={`${className}-button`} type={'primary'} onClick={() => {
+                    validateForm() && addElement();
+                }}>
                     {isEdit.state ? 'Edit' : 'Add'}
                 </Button>
                 {isEdit.state &&
@@ -244,7 +247,7 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeL
                 </div>
                 <div className={`${className}-buttons`}>
                     <Button onClick={() => {
-                        setData((val: any) => val.map((el: T_elementData) => ({
+                        setData((val: T_elementData[]) => val.map((el: T_elementData) => ({
                             ...el,
                             original: el.translation,
                             translation: el.original,
@@ -258,13 +261,17 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeL
                 </div>
             </div>
             <Table className={`${className}-table`}
-                   pagination={false} locale={{
-                emptyText: <Empty description={
-                    <div
-                        className={`${className}-placeholder${(!validateList.setValidation || validateList.data) ? '' : ' error'}`}>
-                        Please, add elements to the list</div>
-                } image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-            }}
+                   pagination={false}
+                   locale={{
+                       emptyText: <Empty
+                           description={
+                               <div
+                                   className={`${className}-placeholder${(!validateList.setValidation || validateList.data) ? '' : ' error'}`}>
+                                   Please, add elements to the list
+                               </div>
+                           }
+                           image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+                   }}
                    onRow={record => ({
                        onClick: () => {
                            setIsEdit({state: true, id: record.id});
@@ -284,11 +291,4 @@ export const PageCreateItemContainer: FC<I_propTypes> = ({list, setList, changeL
     );
 };
 
-
-let mapStateToProps = (state: I_state) => ({
-    list: state.app.list,
-});
-
-export const PageCreateItem = connect(
-    mapStateToProps, {setList, changeList, setHeaderTitle}
-)(withRouter(PageCreateItemContainer));
+export default memo(PageCreateItem);

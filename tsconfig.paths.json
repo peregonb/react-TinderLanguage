@@ -9,6 +9,9 @@
       ],
       "@pages/*": [
         "./src/pages/*"
+      ],
+      "@hooks/*": [
+        "./src/helpers/hooks/*"
       ]
     }
   }

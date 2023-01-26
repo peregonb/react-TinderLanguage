@@ -4,7 +4,7 @@ import './assets/styles/App.scss';
 import {Route} from 'react-router-dom';
 import {PageMainList} from '@pages/PageMainList';
 import {PageCards} from '@pages/PageCards';
-import {Header} from '@components/Header';
+import Header from '@components/Header';
 import {PageCreateItem} from '@pages/PageCreateItem';
 
 const className = 'language';
