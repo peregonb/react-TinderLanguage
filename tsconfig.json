@@ -19,9 +19,22 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@redux/*": [
+        "./src/redux/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@pages/*": [
+        "./src/pages/*"
+      ],
+      "@hooks/*": [
+        "./src/helpers/hooks/*"
+      ]
+    }
   },
-  "extends": "./tsconfig.paths.json",
   "include": [
     "src"
   ],
