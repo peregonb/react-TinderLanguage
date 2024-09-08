@@ -357,13 +357,13 @@ body {
 
   tr {
     td, th {
+      width: 50%;
+      min-width: 50%;
+
       &:first-child {
         padding-right: 5px !important;
         padding-left: 10px !important;
       }
-
-      width: 50%;
-      min-width: 50%;
 
       &:not(:last-child) {
         border-right: 1px solid rgba(#fff, .1);

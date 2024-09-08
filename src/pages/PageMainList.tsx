@@ -1,10 +1,10 @@
-import React, {FC, memo, useEffect, useMemo} from 'react';
-import {List, Popconfirm} from 'antd';
-import {EditOutlined, DeleteOutlined} from '@ant-design/icons';
-import {I_listItemSingle, I_state} from '@redux/types';
-import {useDispatch} from 'react-redux';
-import {deleteList, setHeaderTitle} from '@redux/app-reducer';
-import {Link} from 'react-router-dom';
+import { FC, memo, useEffect, useMemo } from 'react';
+import { List, Popconfirm } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { I_listItemSingle } from '@redux/types';
+import { useDispatch } from 'react-redux';
+import { deleteList, setHeaderTitle } from '@redux/app-reducer';
+import { Link } from 'react-router-dom';
 import Reset from '@components/Reset';
 import useSelector from "@hooks/useSelector";
 
@@ -13,11 +13,11 @@ const className = 'list';
 export const PageMainList: FC = () => {
     const dispatch = useDispatch();
     const {list} = useSelector(state => state.app);
-    const listTitles: string[] = useMemo(() => [...list.map((el: I_listItemSingle) => el.name)], [list]);
+    const listTitles: Array<string> = useMemo(() => [...list.map((el: I_listItemSingle) => el.name)], [list]);
 
     useEffect(() => {
         dispatch(setHeaderTitle('Lists'));
-    }, []);
+    }, [dispatch]);
 
     return (
         <>

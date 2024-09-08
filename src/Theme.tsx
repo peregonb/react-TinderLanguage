@@ -1,9 +1,9 @@
-import React, {FC} from 'react';
-import {ConfigProvider, theme} from 'antd';
+import { FC, ReactNode } from 'react';
+import { ConfigProvider, theme } from 'antd';
 
 const {darkAlgorithm} = theme;
 
-const Theme: FC = ({children}) => (
+const Theme: FC<{ children?: ReactNode }> = ({children}) => (
     <ConfigProvider theme={{
         algorithm: darkAlgorithm,
         token: {

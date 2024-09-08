@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useReducer } from 'react';
+import { FC, useCallback } from 'react';
 import { Button, Popconfirm } from 'antd';
 import { ClearOutlined } from '@ant-design/icons';
 
@@ -12,18 +12,18 @@ const Reset: FC = () => {
 
     return (
         <Popconfirm
-            placement={ 'topRight' }
-            title={ 'Are you sure you wanna reset the app?' }
-            onConfirm={ onConfirmHandler }
-            okText={ 'Yes' }
-            cancelText={ 'No' }
+            placement={'topRight'}
+            title={'Are you sure you wanna reset the app?'}
+            onConfirm={onConfirmHandler}
+            okText={'Yes'}
+            cancelText={'No'}
         >
             <Button
-                type={ 'primary' }
-                shape={ 'circle' }
-                size={ 'large' }
-                icon={ <ClearOutlined/> }
-                className={ className }
+                type={'primary'}
+                shape={'circle'}
+                size={'large'}
+                icon={<ClearOutlined/>}
+                className={className}
                 danger
             />
         </Popconfirm>

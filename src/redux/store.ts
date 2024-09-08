@@ -1,6 +1,6 @@
-import {combineReducers, createStore} from 'redux';
+import { combineReducers, createStore } from 'redux';
 import appReducer from './app-reducer';
-import {I_state} from '@redux/types';
+import { I_state } from '@redux/types';
 
 const reducers = combineReducers({
     app: appReducer

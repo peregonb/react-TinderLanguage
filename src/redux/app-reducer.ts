@@ -1,4 +1,4 @@
-import {I_listItemSingle} from '@redux/types';
+import { I_listItemSingle } from '@redux/types';
 
 const SET_HEADER_TITLE = 'SET_HEADER_TITLE';
 const SET_LIST = 'SET_LIST';
