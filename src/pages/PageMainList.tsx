@@ -35,9 +35,9 @@ export const PageMainList: FC = () => {
                         </Link>
                         <div className={`${className}-icons`}>
                             <Link
-                                className={`${className}-edit-link`}
+                                className={`${className}-icon ${className}-icon-edit`}
                                 to={`/edit/id${list[index].id}`}>
-                                <EditOutlined className={`${className}-edit`}/>
+                                <EditOutlined/>
                             </Link>
                             <Popconfirm
                                 title={'Are you sure to delete this list?'}
@@ -48,7 +48,7 @@ export const PageMainList: FC = () => {
                                 cancelText={'No'}
                                 placement={'left'}
                             >
-                                <DeleteOutlined className={`${className}-delete`}/>
+                                <DeleteOutlined className={`${className}-icon ${className}-icon-delete`}/>
                             </Popconfirm>
                         </div>
                     </List.Item>

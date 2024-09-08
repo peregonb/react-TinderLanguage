@@ -1,10 +1,10 @@
-import {FC, memo, useCallback, useEffect, useState} from 'react';
-import {Button, Divider, Empty, Input, Table} from 'antd';
-import {getUniqID} from '@components/common/helpers';
-import {T_elementData, T_itemValues} from '@redux/types';
-import {useDispatch} from 'react-redux';
-import {changeList, setHeaderTitle, setList} from '@redux/app-reducer';
-import {useHistory, useRouteMatch} from 'react-router-dom';
+import { FC, memo, useCallback, useEffect, useState } from 'react';
+import { Button, Divider, Empty, Input, Table } from 'antd';
+import { getUniqID } from '@components/common/helpers';
+import { T_elementData, T_itemValues } from '@redux/types';
+import { useDispatch } from 'react-redux';
+import { changeList, setHeaderTitle, setList } from '@redux/app-reducer';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import useSelector from '@hooks/useSelector';
 
 const className = 'edit';
@@ -76,11 +76,11 @@ export const PageCreateItem: FC = () => {
     const {list} = useSelector(state => state.app);
 
     const targetListItemTarget = list.find(el => el.key === params.itemId);
-    const [nameValue, setNameValue] = useState(!!params.itemId ? targetListItemTarget!.name : '');
+    const [nameValue, setNameValue] = useState(params.itemId ? targetListItemTarget!.name : '');
     const [itemValues, setItemValues] = useState<T_itemValues>(DEFAULT_ITEM_VALUES);
     const [validateList, setValidateList] = useState<T_validateList>(DEFAULT_VALIDATE_LIST);
     const [validateElement, setValidateElement] = useState<T_validateElement>(DEFAULT_VALIDATE_ELEMENT);
-    const [data, setData] = useState<T_elementData[]>(!!params.itemId ? targetListItemTarget!.words : []);
+    const [data, setData] = useState<T_elementData[]>(params.itemId ? targetListItemTarget!.words : []);
     const [tableData, setTableData] = useState<T_tableData[]>([]);
     const [isEdit, setIsEdit] = useState<T_editState>(DEFAULT_EDIT_STATE);
 
@@ -148,7 +148,7 @@ export const PageCreateItem: FC = () => {
         });
 
         if (!!nameValue.trim() && !!data.length) {
-            if (!!params.itemId) {
+            if (params.itemId) {
                 dispatch(changeList({
                     name: nameValue,
                     words: data,
@@ -172,13 +172,13 @@ export const PageCreateItem: FC = () => {
         setTableData(data.map(el => ({
             key: el.key,
             id: el.id,
-            original: `${el.original}${!!el.excerpt.original ? ` (${el.excerpt.original})` : ''}`,
-            translation: `${el.translation}${!!el.excerpt.translation ? ` (${el.excerpt.translation})` : ''}`
+            original: `${el.original}${el.excerpt.original ? ` (${el.excerpt.original})` : ''}`,
+            translation: `${el.translation}${el.excerpt.translation ? ` (${el.excerpt.translation})` : ''}`
         })));
     }, [data]);
 
     useEffect(() => {
-        dispatch(setHeaderTitle(!!params.itemId ? 'Edit list' : 'Create list'));
+        dispatch(setHeaderTitle(params.itemId ? 'Edit list' : 'Create list'));
     }, []);
 
     return (
@@ -231,19 +231,19 @@ export const PageCreateItem: FC = () => {
             </Input.Group>
             <div className={`${className}-buttonGroup`}>
                 <Button className={`${className}-button`} type={'primary'} onClick={() => {
-                    validateForm() && addElement();
+                    if(validateForm()) return addElement();
                 }}>
                     {isEdit.state ? 'Edit' : 'Add'}
                 </Button>
                 {isEdit.state &&
-                <Button className={`${className}-button`} type={'primary'} danger onClick={() => removeElement()}>
-                    Delete
-                </Button>}
+                    <Button className={`${className}-button`} type={'primary'} danger onClick={() => removeElement()}>
+                        Delete
+                    </Button>}
             </div>
             <Divider className={`${className}-divider`}/>
             <div className={`${className}-titleGroup`}>
                 <div className={`${className}-title`}>
-                    {!!nameValue ? `${nameValue.trim()}:` : 'List of elements:'}
+                    {nameValue ? `${nameValue.trim()}:` : 'List of elements:'}
                 </div>
                 <div className={`${className}-buttons`}>
                     <Button onClick={() => {

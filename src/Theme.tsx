@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { FC, memo, ReactNode } from 'react';
 import { ConfigProvider, theme } from 'antd';
 
 const {darkAlgorithm} = theme;
@@ -17,4 +17,4 @@ const Theme: FC<{ children?: ReactNode }> = ({children}) => (
     </ConfigProvider>
 )
 
-export default Theme;
+export default memo(Theme);

@@ -33,16 +33,24 @@ body {
     display: flex;
     color: #ffffff;
     position: relative;
-    margin-top: 1px;
 
     &:after {
       content: '';
-      height: 40px;
-      width: 40px;
+      height: 36px;
+      width: 36px;
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
+      border-radius: 100%;
+      transition: background-color $t;
+    }
+
+    &:hover,
+    &:active {
+      &:after {
+        background-color: rgba(#fff, .1);
+      }
     }
   }
 }
@@ -63,7 +71,6 @@ body {
 }
 
 .list {
-
   &-item {
     display: flex;
     justify-content: space-between;
@@ -72,35 +79,50 @@ body {
 
   &-text {
     color: #ffffff;
-    font-size: 14px;
-    width: calc(100% - 50px);
+    font-size: 16px;
+    display: flex;
+    flex-grow: 1;
   }
 
   &-icons {
-    width: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 0 4px;
   }
 
-  &-edit,
-  &-delete {
+  &-icon {
+    height: 32px;
+    width: 32px;
+    padding: 4px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
     font-size: 18px;
-    width: 22px;
     cursor: pointer;
-  }
+    transition: background-color $t;
 
-  &-edit {
-    color: #1cab9c;
+    &-edit {
+      color: #1cab9c;
 
-    &-link {
-      display: block;
-      height: 18px;
+      &:hover,
+      &:active {
+        color: #1cab9c;
+        background-color: rgba(#1cab9c, .2);
+      }
     }
-  }
 
-  &-delete {
-    color: #ab1c2b;
+    &-delete {
+      color: #ab1c2b;
+
+      &:hover,
+      &:active {
+        color: #ab1c2b;
+        background-color: rgba(#ab1c2b, .2);
+      }
+    }
   }
 }
 
@@ -323,56 +345,4 @@ body {
   position: fixed;
   bottom: 15px;
   right: 20px;
-}
-
-.ant-table {
-  font-size: 12px !important;
-
-  &-wrapper {
-    border: 1px solid rgba(#fff, .1);
-
-    .ant-table-tbody tr:last-child td {
-      border-bottom: none;
-    }
-  }
-
-  &-title,
-  &-footer,
-  &-thead > tr > th,
-  &-tbody > tr > td,
-  tfoot > tr > th,
-  tfoot > tr > td {
-    padding: 5px;
-  }
-
-  &-thead {
-    .ant-table-cell {
-      font-weight: 600;
-    }
-  }
-
-  &-content {
-    overflow-x: auto;
-  }
-
-  tr {
-    td, th {
-      width: 50%;
-      min-width: 50%;
-
-      &:first-child {
-        padding-right: 5px !important;
-        padding-left: 10px !important;
-      }
-
-      &:not(:last-child) {
-        border-right: 1px solid rgba(#fff, .1);
-      }
-
-      &:last-child {
-        padding-right: 10px !important;
-      }
-    }
-  }
-
 }

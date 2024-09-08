@@ -5,7 +5,7 @@ const SET_LIST = 'SET_LIST';
 const CHANGE_LIST = 'CHANGE_LIST';
 const DELETE_LIST = 'DELETE_LIST';
 
-let initialState = {
+const initialState = {
     headline: '',
     list: [
         {
