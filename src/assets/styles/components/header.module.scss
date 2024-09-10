@@ -1,0 +1,48 @@
+.Header {
+  height: 50px;
+  background-color: rgba(#ffffff, .075);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &_headline {
+    font-size: 20px;
+    color: #ffffff;
+    font-weight: 500;
+  }
+
+  &_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &_exit {
+    height: 14px;
+    width: 14px;
+    font-size: 14px;
+    padding: 0;
+    display: flex;
+    color: #ffffff;
+    position: relative;
+
+    &:after {
+      content: '';
+      height: 36px;
+      width: 36px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 100%;
+      transition: background-color $t;
+    }
+
+    &:hover,
+    &:active {
+      &:after {
+        background-color: rgba(#fff, .1);
+      }
+    }
+  }
+}

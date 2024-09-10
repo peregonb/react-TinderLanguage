@@ -1,19 +1,23 @@
 import { FC, memo, useEffect, useMemo } from 'react';
 import { List, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { I_listItemSingle } from '@redux/types';
-import { useDispatch } from 'react-redux';
-import { deleteList, setHeaderTitle } from '@redux/app-reducer';
+import { IListItemSingle } from '@redux/reducers/main/types';
 import { Link } from 'react-router-dom';
 import Reset from '@components/Reset';
-import useSelector from "@hooks/useSelector";
+import { useDispatch, useSelector } from '@redux/hooks';
+import { mainRootSelectors } from '@redux/reducers/main/selectors';
+import { deleteList, setHeaderTitle } from '@redux/reducers/main';
 
-const className = 'list';
+import css from '@styles/pages/List.module.scss'
+import cn from 'classnames';
 
-export const PageMainList: FC = () => {
+const PageMainList: FC = () => {
     const dispatch = useDispatch();
-    const {list} = useSelector(state => state.app);
-    const listTitles: Array<string> = useMemo(() => [...list.map((el: I_listItemSingle) => el.name)], [list]);
+    const list = useSelector(mainRootSelectors.list);
+
+    const listTitles: Array<string> = useMemo(() => {
+        return list.map((el: IListItemSingle) => el.name);
+    }, [list]);
 
     useEffect(() => {
         dispatch(setHeaderTitle('Lists'));
@@ -22,33 +26,34 @@ export const PageMainList: FC = () => {
     return (
         <>
             <List
-                className={className}
+                className={css.List}
                 size={'small'}
                 bordered
                 dataSource={listTitles}
                 renderItem={(item, index) => (
-                    <List.Item className={`${className}-item`}>
+                    <List.Item className={css.List_item}>
                         <Link
                             to={`/play/id${list[index].id}`}
-                            className={`${className}-text`}>
+                            className={css.List_text}>
                             {item}
                         </Link>
-                        <div className={`${className}-icons`}>
+                        <div className={css.List_icons}>
                             <Link
-                                className={`${className}-icon ${className}-icon-edit`}
+                                className={cn(css.List_icon, css.List_icon_edit)}
                                 to={`/edit/id${list[index].id}`}>
                                 <EditOutlined/>
                             </Link>
                             <Popconfirm
                                 title={'Are you sure to delete this list?'}
                                 onConfirm={() => {
+                                    console.log(index)
                                     dispatch(deleteList(index));
                                 }}
                                 okText={'Yes'}
                                 cancelText={'No'}
                                 placement={'left'}
                             >
-                                <DeleteOutlined className={`${className}-icon ${className}-icon-delete`}/>
+                                <DeleteOutlined className={cn(css.List_icon, css.List_icon_delete)}/>
                             </Popconfirm>
                         </div>
                     </List.Item>

@@ -1,13 +1,14 @@
 import { FC, memo, useCallback, useEffect, useState } from 'react';
-import { Button, Divider, Empty, Input, Table } from 'antd';
+import { Button, Divider, Empty, Input, Table, Space } from 'antd';
 import { getUniqID } from '@components/common/helpers';
-import { T_elementData, T_itemValues } from '@redux/types';
-import { useDispatch } from 'react-redux';
-import { changeList, setHeaderTitle, setList } from '@redux/app-reducer';
+import { IElementData, IItemValues, IListItemSingle } from '@redux/reducers/main/types.ts';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import useSelector from '@hooks/useSelector';
+import { useSelector, useDispatch } from '@redux/hooks.ts';
+import { mainRootSelectors } from '@redux/reducers/main/selectors.ts';
+import { addList, changeList, setHeaderTitle } from '@redux/reducers/main';
 
-const className = 'edit';
+import css from '@styles/pages/Create.module.scss';
+import cn from 'classnames';
 
 const columns = [
     {
@@ -20,34 +21,30 @@ const columns = [
     }
 ];
 
-type T_tableData = {
+type ITableData = {
     key: string,
     id: number,
     original: string,
     translation: string,
 }
 
-type T_routeTypes = {
-    itemId?: string
-}
-
-type T_validateElement = {
+type IValidateElement = {
     showErrorOriginal: boolean,
     showErrorTranslation: boolean
 }
 
-type T_validateList = {
+type IValidateList = {
     setValidation: boolean,
     name: boolean,
     data: boolean
 }
 
-type T_editState = {
+type IEditState = {
     state: boolean,
-    id: null | number
+    id: Nullable<number>,
 }
 
-const DEFAULT_ITEM_VALUES: T_itemValues = {
+const DEFAULT_ITEM_VALUES: IItemValues = {
     original: '',
     translation: '',
     excerpt: {
@@ -55,47 +52,49 @@ const DEFAULT_ITEM_VALUES: T_itemValues = {
         translation: ''
     }
 };
-const DEFAULT_VALIDATE_ELEMENT: T_validateElement = {
+
+const DEFAULT_VALIDATE_ELEMENT: IValidateElement = {
     showErrorOriginal: false,
     showErrorTranslation: false
 };
-const DEFAULT_VALIDATE_LIST: T_validateList = {
+
+const DEFAULT_VALIDATE_LIST: IValidateList = {
     setValidation: false,
     name: false,
     data: false
 };
-const DEFAULT_EDIT_STATE: T_editState = {
+
+const DEFAULT_EDIT_STATE: IEditState = {
     state: false,
     id: null
 };
 
-export const PageCreateItem: FC = () => {
+const PageCreateItem: FC = () => {
     const dispatch = useDispatch();
     const history = useHistory();
-    const {params} = useRouteMatch<T_routeTypes>();
-    const {list} = useSelector(state => state.app);
+    const {params} = useRouteMatch<{ itemId: string }>();
+    const list = useSelector(mainRootSelectors.list);
 
-    const targetListItemTarget = list.find(el => el.key === params.itemId);
+    const targetListItemTarget = list.find((el: IListItemSingle) => el.key === params.itemId);
     const [nameValue, setNameValue] = useState(params.itemId ? targetListItemTarget!.name : '');
-    const [itemValues, setItemValues] = useState<T_itemValues>(DEFAULT_ITEM_VALUES);
-    const [validateList, setValidateList] = useState<T_validateList>(DEFAULT_VALIDATE_LIST);
-    const [validateElement, setValidateElement] = useState<T_validateElement>(DEFAULT_VALIDATE_ELEMENT);
-    const [data, setData] = useState<T_elementData[]>(params.itemId ? targetListItemTarget!.words : []);
-    const [tableData, setTableData] = useState<T_tableData[]>([]);
-    const [isEdit, setIsEdit] = useState<T_editState>(DEFAULT_EDIT_STATE);
+    const [itemValues, setItemValues] = useState<IItemValues>(DEFAULT_ITEM_VALUES);
+    const [validateList, setValidateList] = useState<IValidateList>(DEFAULT_VALIDATE_LIST);
+    const [validateElement, setValidateElement] = useState<IValidateElement>(DEFAULT_VALIDATE_ELEMENT);
+    const [data, setData] = useState<IElementData[]>(params.itemId ? targetListItemTarget!.words : []);
+    const [tableData, setTableData] = useState<ITableData[]>([]);
+    const [isEdit, setIsEdit] = useState<IEditState>(DEFAULT_EDIT_STATE);
 
-
-    const cleanInputValues = (): void => {
+    const cleanInputValues = useCallback(() => {
         setItemValues(DEFAULT_ITEM_VALUES);
-    }
+    }, []);
 
-    const cleanElementInputValues = (): void => {
+    const cleanElementInputValues = useCallback(() => {
         cleanInputValues();
         setValidateElement(DEFAULT_VALIDATE_ELEMENT);
-    }
+    }, [cleanInputValues]);
 
     const validateForm = useCallback((): boolean => {
-        const elementsData: T_validateElement = {
+        const elementsData: IValidateElement = {
             showErrorOriginal: !itemValues.original.trim().length,
             showErrorTranslation: !itemValues.translation.trim().length
         };
@@ -105,8 +104,18 @@ export const PageCreateItem: FC = () => {
         return !Object.values(elementsData).includes(true);
     }, [itemValues]);
 
-    const addElement = () => {
-        const commonData: T_itemValues = {
+    const changeTableData = useCallback(() => {
+        setTableData(data.map(el => ({
+            key: el.key,
+            id: el.id,
+            original: `${el.original}${el.excerpt.original ? ` (${el.excerpt.original})` : ''}`,
+            translation: `${el.translation}${el.excerpt.translation ? ` (${el.excerpt.translation})` : ''}`
+        })));
+    }, [data]);
+    // TODO rewrite
+
+    const addElement = useCallback(() => {
+        const commonData: IItemValues = {
             original: itemValues.original,
             translation: itemValues.translation,
             excerpt: {
@@ -131,16 +140,17 @@ export const PageCreateItem: FC = () => {
             }], ...val]);
         }
 
+        changeTableData();
         cleanElementInputValues();
-    };
+    }, [changeTableData, cleanElementInputValues, isEdit.id, isEdit.state, itemValues.excerpt.original, itemValues.excerpt.translation, itemValues.original, itemValues.translation]);
 
-    const removeElement = (): void => {
+    const removeElement = useCallback(() => {
         setData(val => (val.filter(el => el.id !== isEdit.id)));
         cleanElementInputValues();
         setIsEdit(DEFAULT_EDIT_STATE);
-    }
+    }, [cleanElementInputValues, isEdit.id]);
 
-    const submitForm = (): void => {
+    const submitForm = useCallback(() => {
         setValidateList({
             setValidation: true,
             name: !!nameValue,
@@ -150,13 +160,16 @@ export const PageCreateItem: FC = () => {
         if (!!nameValue.trim() && !!data.length) {
             if (params.itemId) {
                 dispatch(changeList({
-                    name: nameValue,
-                    words: data,
-                    key: params.itemId,
-                    id: parseInt(params.itemId)
-                }, params.itemId));
+                    item: {
+                        name: nameValue,
+                        words: data,
+                        key: params.itemId,
+                        id: parseInt(params.itemId)
+                    },
+                    id: Number(params.itemId)
+                }));
             } else {
-                dispatch(setList({
+                dispatch(addList({
                     name: nameValue,
                     words: data,
                     key: getUniqID(list),
@@ -166,52 +179,54 @@ export const PageCreateItem: FC = () => {
 
             history.push('/');
         }
-    }
-
-    useEffect(() => {
-        setTableData(data.map(el => ({
-            key: el.key,
-            id: el.id,
-            original: `${el.original}${el.excerpt.original ? ` (${el.excerpt.original})` : ''}`,
-            translation: `${el.translation}${el.excerpt.translation ? ` (${el.excerpt.translation})` : ''}`
-        })));
-    }, [data]);
+    }, [data, dispatch, history, list, nameValue, params.itemId]);
 
     useEffect(() => {
         dispatch(setHeaderTitle(params.itemId ? 'Edit list' : 'Create list'));
-    }, []);
+    }, [dispatch, params.itemId]);
 
+    useEffect(() => {
+        console.log(tableData)
+    }, [tableData]);
+
+    console.log(228);
     return (
-        <div className={`${className}`}>
-            <div className={`${className}-title`}>
+        <div className={css.Create}>
+            <div className={css.Create_title}>
                 Name of the list *
             </div>
             <Input
                 onFocus={() => setValidateList({...validateList, setValidation: false})}
-                className={`${className}-input${(!validateList.setValidation || validateList.name) ? '' : ' error'}`}
+                className={cn(css.Create_input, {
+                    [css.Create_input__error]: !(!validateList.setValidation || validateList.name)
+                })}
                 value={nameValue} placeholder={'Name of the list'}
                 onInput={e => setNameValue(e.currentTarget.value)}/>
-            <div className={`${className}-title`}>
+            <div className={css.Create_title}>
                 Elements *
             </div>
-            <Input.Group compact className={`${className}-inputGroup`}>
+            <Space.Compact className={css.Create_inputGroup}>
                 <Input
                     onFocus={() => setValidateElement({...validateElement, showErrorOriginal: false})}
-                    className={`${className}-input${validateElement.showErrorOriginal ? ' error' : ''}`}
+                    className={cn(css.Create_input, {
+                        [css.Create_input__error]: validateElement.showErrorOriginal
+                    })}
                     value={itemValues.original}
                     onInput={e => setItemValues({...itemValues, original: e.currentTarget.value})}
                     placeholder={'Original'}/>
                 <Input
                     onFocus={() => setValidateElement({...validateElement, showErrorTranslation: false})}
-                    className={`${className}-input${validateElement.showErrorTranslation ? ' error' : ''}`}
+                    className={cn(css.Create_input, {
+                        [css.Create_input__error]: validateElement.showErrorTranslation
+                    })}
                     value={itemValues.translation}
                     onInput={e => setItemValues({...itemValues, translation: e.currentTarget.value})}
                     placeholder={'Translation'}/>
-            </Input.Group>
-            <div className={`${className}-excerpt`}>
+            </Space.Compact>
+            <div className={css.Create_excerpt}>
                 Extra info
             </div>
-            <Input.Group compact className={`${className}-inputGroup`}>
+            <Space.Compact className={css.Create_inputGroup}>
                 <Input value={itemValues.excerpt.original}
                        onInput={e => setItemValues({
                            ...itemValues, excerpt: {
@@ -228,26 +243,26 @@ export const PageCreateItem: FC = () => {
                            }
                        })}
                        placeholder={'For translation'}/>
-            </Input.Group>
-            <div className={`${className}-buttonGroup`}>
-                <Button className={`${className}-button`} type={'primary'} onClick={() => {
-                    if(validateForm()) return addElement();
+            </Space.Compact>
+            <div className={css.Create_buttonGroup}>
+                <Button className={css.Create_button} type={'primary'} onClick={() => {
+                    if (validateForm()) return addElement();
                 }}>
                     {isEdit.state ? 'Edit' : 'Add'}
                 </Button>
                 {isEdit.state &&
-                    <Button className={`${className}-button`} type={'primary'} danger onClick={() => removeElement()}>
+                    <Button className={css.Create_button} type={'primary'} danger onClick={() => removeElement()}>
                         Delete
                     </Button>}
             </div>
-            <Divider className={`${className}-divider`}/>
-            <div className={`${className}-titleGroup`}>
-                <div className={`${className}-title`}>
+            <Divider className={css.Create_divider}/>
+            <div className={css.Create_titleGroup}>
+                <div className={css.Create_title}>
                     {nameValue ? `${nameValue.trim()}:` : 'List of elements:'}
                 </div>
-                <div className={`${className}-buttons`}>
+                <div className={css.Create_buttons}>
                     <Button onClick={() => {
-                        setData((val: T_elementData[]) => val.map((el: T_elementData) => ({
+                        setData((val: IElementData[]) => val.map((el: IElementData) => ({
                             ...el,
                             original: el.translation,
                             translation: el.original,
@@ -256,17 +271,18 @@ export const PageCreateItem: FC = () => {
                                 translation: el.excerpt.original
                             }
                         })))
-                    }} type={'primary'}>Switch</Button>
+                    }} disabled={!tableData.length} type={'primary'}>Switch</Button>
                     <Button onClick={() => submitForm()} type={'primary'}>Save</Button>
                 </div>
             </div>
-            <Table className={`${className}-table`}
+            <Table className={css.Create_table}
                    pagination={false}
                    locale={{
                        emptyText: <Empty
                            description={
-                               <div
-                                   className={`${className}-placeholder${(!validateList.setValidation || validateList.data) ? '' : ' error'}`}>
+                               <div className={cn(css.Create_placeholder, {
+                                   [css.Create_placeholder__error]: !(!validateList.setValidation || validateList.data)
+                               })}>
                                    Please, add elements to the list
                                </div>
                            }

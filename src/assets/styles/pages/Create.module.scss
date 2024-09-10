@@ -1,0 +1,76 @@
+.Create {
+
+  &_title {
+    font-weight: 500;
+    font-size: 16px;
+
+    &:not(:first-of-type) {
+      margin-top: 15px;
+    }
+  }
+
+  &_buttons {
+    button:not(:last-of-type) {
+      margin-right: 10px !important;
+    }
+  }
+
+  &_input {
+    margin-top: 5px;
+    transition: border-color $t;
+
+    &__error {
+      border-color: #ab1c2b;
+      transition: border-color $t;
+    }
+  }
+
+  &_placeholder {
+    transition: color $t;
+
+    &__error {
+      color: #ab1c2b;
+      transition: color $t;
+    }
+  }
+
+  &_divider {
+    margin: 20px 0 10px 0;
+  }
+
+  &_inputGroup {
+    margin-top: 5px;
+
+    input {
+      width: 50% !important;
+    }
+  }
+
+  &_titleGroup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &_buttonGroup {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 15px;
+  }
+
+  &_table {
+    margin-top: 10px;
+  }
+
+  &_excerpt {
+    font-weight: 500;
+    margin-top: 10px;
+  }
+
+  &_button {
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
+  }
+}

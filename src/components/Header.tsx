@@ -1,9 +1,11 @@
 import { FC, memo } from 'react';
 import { Button } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
-import useSelector from "@hooks/useSelector";
+import { useSelector } from '@redux/hooks';
 
-const className = 'header';
+import css from '@styles/components/header.module.scss';
+import cn from 'classnames';
+import { mainRootSelectors } from '@redux/reducers/main/selectors';
 
 const HeaderButton: FC = () => {
     const {pathname} = useLocation();
@@ -18,19 +20,19 @@ const HeaderButton: FC = () => {
         default:
             return (
                 <Link to={'/'}>
-                    <div className={`${className}-exit icon-close`}/>
+                    <div className={cn(css.Header_exit, 'icon-close')}/>
                 </Link>
             )
     }
 }
 
 const Header: FC = () => {
-    const {headline} = useSelector(state => state.app);
+    const headline = useSelector(mainRootSelectors.headline);
 
     return (
-        <div className={`${className}`}>
-            <div className={`${className}-wrapper wrapper`}>
-                <div className={`${className}-headline`}>
+        <div className={css.Header}>
+            <div className={cn(css.Header_wrapper, 'wrapper')}>
+                <div className={css.Header_headline}>
                     {headline}
                 </div>
                 <HeaderButton/>

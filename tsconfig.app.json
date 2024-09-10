@@ -23,9 +23,6 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "./",
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
       "@redux/*": [
         "src/redux/*"
       ],
@@ -37,6 +34,9 @@
       ],
       "@hooks/*": [
         "src/helpers/hooks/*"
+      ],
+      "@styles/*": [
+        "src/assets/styles/*"
       ]
     }
   },

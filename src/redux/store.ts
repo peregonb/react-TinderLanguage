@@ -1,37 +1,36 @@
-import { combineReducers, createStore } from 'redux';
-import appReducer from './app-reducer';
-import { I_state } from '@redux/types';
+import { configureStore } from '@reduxjs/toolkit';
+import main from '@redux/reducers/main';
 
-const reducers = combineReducers({
-    app: appReducer
+const localStorageStore = {
+    save: (state: unknown): void => {
+        try {
+            const serialisedState = JSON.stringify(state);
+            localStorage.setItem('persistentState', serialisedState);
+        } catch (e) {
+            console.warn(e);
+        }
+    },
+    load: (): unknown => {
+        try {
+            const serialisedState = localStorage.getItem('persistentState');
+            if (serialisedState === null) return undefined;
+            return JSON.parse(serialisedState);
+        } catch (e) {
+            console.warn(e);
+            return undefined;
+        }
+    }
+}
+
+export const store = configureStore({
+    reducer: {
+        main,
+    },
+    preloadedState: localStorageStore.load(),
 });
 
-const saveToLocalStorage = (state: I_state) => {
-    try {
-        const serialisedState = JSON.stringify(state);
-        localStorage.setItem('persistentState', serialisedState);
-    } catch (e) {
-        console.warn(e);
-    }
-};
-const loadFromLocalStorage = () => {
-    try {
-        const serialisedState = localStorage.getItem('persistentState');
-        if (serialisedState === null) return undefined;
-        return JSON.parse(serialisedState);
-    } catch (e) {
-        console.warn(e);
-        return undefined;
-    }
-};
+store.subscribe(() => localStorageStore.save(store.getState()));
 
-
-let store = createStore(reducers, loadFromLocalStorage(), (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
-
-// @ts-ignore
-window.store = store;
-
-store.subscribe(() => saveToLocalStorage(store.getState()));
-
-export type AppType = ReturnType<typeof reducers>;
-export default store;
+export type IAppStore = typeof store;
+export type IAppState = ReturnType<typeof store.getState>;
+export type IAppDispatch = typeof store.dispatch;

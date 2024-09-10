@@ -13,7 +13,7 @@ const Reset: FC = () => {
     return (
         <Popconfirm
             placement={'topRight'}
-            title={'Are you sure you wanna reset the app?'}
+            title={'Are you sure you wanna reset the main?'}
             onConfirm={onConfirmHandler}
             okText={'Yes'}
             cancelText={'No'}
