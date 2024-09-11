@@ -1,35 +1,40 @@
 .Header {
-  height: 50px;
+  height: 60px;
   background-color: rgba(#ffffff, .075);
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   &_headline {
-    font-size: 20px;
+    font-size: 24px;
     color: #ffffff;
-    font-weight: 500;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &_wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 0 20px;
   }
 
   &_exit {
-    height: 14px;
-    width: 14px;
-    font-size: 14px;
+    height: 18px;
+    width: 18px;
+    font-size: 18px;
     padding: 0;
     display: flex;
     color: #ffffff;
     position: relative;
+    flex-shrink: 0;
 
     &:after {
       content: '';
-      height: 36px;
-      width: 36px;
+      height: 42px;
+      width: 42px;
       position: absolute;
       left: 50%;
       top: 50%;

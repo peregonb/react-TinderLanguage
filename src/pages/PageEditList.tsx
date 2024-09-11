@@ -219,6 +219,7 @@ const PageEditList: FC = () => {
             </Space.Compact>
             <div className={css.Edit_buttonGroup}>
                 <Button
+                    size={'large'}
                     icon={!rowIdToEdit && <PlusOutlined/>}
                     iconPosition={'end'}
                     className={css.Edit_button}
@@ -228,6 +229,7 @@ const PageEditList: FC = () => {
                 </Button>
                 {rowIdToEdit && (
                     <Button
+                        size={'large'}
                         className={css.Edit_button}
                         type={'primary'}
                         danger
@@ -243,12 +245,14 @@ const PageEditList: FC = () => {
                 </div>
                 <div className={css.Edit_buttons}>
                     <Button
+                        size={'large'}
                         onClick={switchTableValues}
                         disabled={!!rowIdToEdit || !listWords.length}
                         type={'primary'}>
                         Switch
                     </Button>
                     <Button
+                        size={'large'}
                         onClick={saveList}
                         type={'primary'}>
                         Save {isTableChanged ? '*' : ''}

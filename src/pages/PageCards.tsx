@@ -3,7 +3,7 @@ import { useRouteMatch } from 'react-router-dom';
 import { IListItemData } from '@redux/reducers/main/types.ts';
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons'
 import { setHeaderTitle } from '@redux/reducers/main';
-import { useSelector } from '@redux/hooks.ts';
+import { useDispatch, useSelector } from '@redux/hooks.ts';
 import { mainRootSelectors } from '@redux/reducers/main/selectors.ts';
 
 
@@ -42,6 +42,7 @@ const Deck: FC<{ counter: number }> = ({counter}) => {
 const PageCards: FC = () => {
     const {params} = useRouteMatch<{ listId: string }>();
     const list = useSelector(mainRootSelectors.list)
+    const dispatch = useDispatch();
 
     const id = params.listId;
 
@@ -85,11 +86,11 @@ const PageCards: FC = () => {
 
     useEffect(() => {
         if (main) {
-            setHeaderTitle(main.name)
+            dispatch(setHeaderTitle(main.name));
         }
 
         console.log(words);
-    }, [main, words]);
+    }, [dispatch, main, words]);
 
     return (
         <>

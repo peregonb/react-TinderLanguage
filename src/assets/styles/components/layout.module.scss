@@ -1,6 +1,7 @@
 .Layout {
   font-family: $TTNorms;
   padding-bottom: 20px;
+  overscroll-behavior: none;
 
   &_wrapper {
     margin-top: 20px;

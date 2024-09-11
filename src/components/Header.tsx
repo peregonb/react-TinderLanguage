@@ -14,7 +14,11 @@ const HeaderButton: FC = () => {
         case '/':
             return (
                 <Link to={'/list'}>
-                    <Button type={'primary'}>Create List</Button>
+                    <Button
+                        size={'large'}
+                        type={'primary'}>
+                        Create List
+                    </Button>
                 </Link>
             )
         default:
