@@ -2,8 +2,16 @@
   font-family: $TTNorms;
   padding-bottom: 20px;
   overscroll-behavior: none;
+  height: 100dvh;
+  overflow: hidden;
+
+  &_inner {
+    height: 100dvh;
+    overflow: auto;
+  }
 
   &_wrapper {
     margin-top: 20px;
+    height: calc(100dvh - 60px);
   }
 }

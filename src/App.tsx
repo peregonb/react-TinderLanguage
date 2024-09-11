@@ -12,13 +12,15 @@ import cn from 'classnames';
 
 const App: FC = () => (
     <Layout className={css.Layout}>
-        <Header/>
-        <Layout className={cn(css.Layout_wrapper, 'wrapper')}>
-            <Route path={'/'} exact render={() => <PageMainList/>}/>
-            <Route path={'/list'} exact render={() => <PageEditList/>}/>
-            <Route path={'/list/:listId'} render={() => <PageEditList/>}/>
-            <Route path={'/play/:listId?'} render={() => <PageCards/>}/>
-        </Layout>
+        <div className={css.Layout_inner}>
+            <Header/>
+            <Layout className={cn(css.Layout_wrapper, 'wrapper')}>
+                <Route path={'/'} exact render={() => <PageMainList/>}/>
+                <Route path={'/list'} exact render={() => <PageEditList/>}/>
+                <Route path={'/list/:listId'} render={() => <PageEditList/>}/>
+                <Route path={'/play/:listId?'} render={() => <PageCards/>}/>
+            </Layout>
+        </div>
     </Layout>
 );
 
