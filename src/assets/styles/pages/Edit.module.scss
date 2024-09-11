@@ -39,6 +39,10 @@
     display: flex;
     gap: 0 4px;
 
+    input::placeholder {
+      text-transform: capitalize;
+    }
+
     & > div {
       width: 50% !important;
       margin: 0;

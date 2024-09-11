@@ -12,73 +12,57 @@ const initialState: IMainState = {
                     id: '0',
                     original: 'Apple',
                     translation: '苹果',
-                    excerpt: {
-                        original: '',
-                        translation: 'Píngguǒ'
-                    }
+                    info_original: '',
+                    info_translation: 'Píngguǒ'
                 },
                 {
                     id: '1',
                     original: 'Pear',
                     translation: '梨',
-                    excerpt: {
-                        original: '',
-                        translation: 'Lí'
-                    }
+                    info_original: '',
+                    info_translation: 'Lí'
                 },
                 {
                     id: '2',
                     original: 'Strawberry',
                     translation: '草莓',
-                    excerpt: {
-                        original: '',
-                        translation: 'Cǎoméi'
-                    }
+                    info_original: '',
+                    info_translation: 'Cǎoméi'
                 },
                 {
                     id: '3',
                     original: 'Orange',
                     translation: '橘子',
-                    excerpt: {
-                        original: '',
-                        translation: 'Júzi'
-                    }
+                    info_original: '',
+                    info_translation: 'Júzi'
                 },
                 {
                     id: '4',
                     original: 'Banana',
                     translation: '香蕉',
-                    excerpt: {
-                        original: '',
-                        translation: 'Xiāngjiāo'
-                    }
+                    info_original: '',
+                    info_translation: 'Xiāngjiāo'
                 },
                 {
                     id: '5',
                     original: 'Pineapple',
                     translation: '菠萝',
-                    excerpt: {
-                        original: '',
-                        translation: 'Bōluó'
-                    }
+                    info_original: '',
+                    info_translation: 'Bōluó'
                 },
                 {
                     id: '6',
                     original: 'Blueberry',
                     translation: '蓝莓',
-                    excerpt: {
-                        original: '',
-                        translation: 'Lánméi'
-                    }
+                    info_original: '',
+                    info_translation: 'Lánméi'
                 },
                 {
                     id: '7',
                     original: 'Cherry',
                     translation: '樱桃',
-                    excerpt: {
-                        original: '',
-                        translation: 'Yīngtáo'
-                    }
+                    info_original: '',
+                    info_translation: 'Yīngtáo'
                 }
             ],
         },
@@ -90,19 +74,15 @@ const initialState: IMainState = {
                     id: '0',
                     original: 'Яблоко',
                     translation: 'Apple',
-                    excerpt: {
-                        original: 'yabloko',
-                        translation: 'эпл'
-                    }
+                    info_original: 'yabloko',
+                    info_translation: 'эпл'
                 },
                 {
                     id: '1',
                     original: 'Груша',
                     translation: 'Pear',
-                    excerpt: {
-                        original: 'grusha',
-                        translation: 'пир'
-                    }
+                    info_original: 'grusha',
+                    info_translation: 'пир'
                 }
             ],
         }

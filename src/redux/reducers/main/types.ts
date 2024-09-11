@@ -16,8 +16,6 @@ export type IListItemData = IListItemValues & {
 export type IListItemValues = {
     original: string,
     translation: string,
-    excerpt: {
-        original: string,
-        translation: string
-    }
+    info_original: string,
+    info_translation: string
 }

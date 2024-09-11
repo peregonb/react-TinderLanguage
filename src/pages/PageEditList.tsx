@@ -1,7 +1,7 @@
 import { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Divider, Empty, Input, Table, Space, Form } from 'antd';
 import { getUniqID } from '@components/common/helpers';
-import { IListItemData, IListItemSingle } from '@redux/reducers/main/types';
+import { IListItemData, IListItemSingle, IListItemValues } from '@redux/reducers/main/types';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from '@redux/hooks';
 import { mainRootSelectors } from '@redux/reducers/main/selectors';
@@ -11,13 +11,14 @@ import { PlusOutlined } from '@ant-design/icons';
 import css from '@styles/pages/Edit.module.scss';
 import cn from 'classnames';
 
-type IFieldType = {
-    name?: string;
-    original?: string;
-    translation?: string;
-    ['excerpt.original']?: string;
-    ['excerpt.translation']?: string;
-};
+type IInputName = 'name' | 'original' | 'translation' | 'info_original' | 'info_translation';
+type IFieldType = Record<IInputName, Undefined<string>>;
+
+const INPUT: Record<'full' | 'word' | 'info', Array<IInputName>> = {
+    full: ['original', 'translation', 'info_original', 'info_translation'],
+    word: ['original', 'translation'],
+    info: ['info_original', 'info_translation'],
+}
 
 const COLUMNS = [
     {
@@ -51,24 +52,14 @@ const PageEditList: FC = () => {
     const isTableChanged = useMemo(() => JSON.stringify(foundListItem?.words ?? []) !== JSON.stringify(listWords ?? []), [foundListItem, listWords]);
 
     const cleanElementInputValues = useCallback(() => {
-        form.setFieldsValue({
-            'original': '',
-            'translation': '',
-            'excerpt.original': '',
-            'excerpt.translation': '',
-        });
+        form.setFieldsValue(Object.fromEntries(INPUT.full.map(el => [el, ''])));
     }, [form]);
 
     const setListRowId = useCallback((id: string) => {
-        const {original, translation, excerpt}: IListItemData = listWords.find(el => el.id === id)!;
+        const foundRow: IListItemData = listWords.find(el => el.id === id)!;
 
         setRowIdToEdit(id);
-        form.setFieldsValue({
-            'original': original,
-            'translation': translation,
-            'excerpt.original': excerpt.original,
-            'excerpt.translation': excerpt.translation,
-        });
+        form.setFieldsValue(Object.fromEntries(INPUT.full.map(el => [el, foundRow[(el as keyof IListItemData)]])));
     }, [listWords, form]);
 
     const switchTableValues = useCallback(() => {
@@ -77,77 +68,66 @@ const PageEditList: FC = () => {
                 ...el,
                 original: el.translation,
                 translation: el.original,
-                excerpt: {
-                    original: el.excerpt.translation,
-                    translation: el.excerpt.original,
-                }
+                info_original: el.info_translation,
+                info_translation: el.info_original,
             })))
     }, []);
 
     const addElement = useCallback(() => {
-        form.validateFields(['original', 'translation', 'excerpt.original', 'excerpt.translation'])
-            .then(r => {
+        form.validateFields(INPUT.full)
+            .then((r: IListItemValues) => {
+                const newList: IListItemValues = Object.fromEntries(INPUT.full.map(el => [el, r[(el as keyof IListItemValues)] ?? ''])) as IListItemValues;
+
                 if (rowIdToEdit) {
                     setListWords(prev => prev.map(el => {
                         if (el.id !== rowIdToEdit) return el;
 
                         return {
                             ...el,
-                            original: r.original,
-                            translation: r.translation,
-                            excerpt: {
-                                original: r['excerpt.original'] || '',
-                                translation: r['excerpt.translation'] || '',
-                            }
+                            ...newList,
                         }
                     }));
 
                     setRowIdToEdit(null);
                 } else {
-                    setListWords(prev => [{
-                        id: getUniqID(),
-                        original: r.original,
-                        translation: r.translation,
-                        excerpt: {
-                            original: r['excerpt.original'] || '',
-                            translation: r['excerpt.translation'] || '',
-                        }
-                    }, ...prev]);
+                    setListWords(prev => [
+                        {
+                            id: getUniqID(),
+                            ...newList,
+                        },
+                        ...prev
+                    ]);
 
                     setTableErrorStatus(false);
                 }
 
                 cleanElementInputValues();
-                return r;
-            })
-            .catch(err => console.error('Error adding element:', err));
+            }).catch(err => console.warn(err));
     }, [cleanElementInputValues, form, rowIdToEdit]);
 
     const saveList = useCallback(() => {
         const isTableFilled = listWords.length;
         setTableErrorStatus(!isTableFilled);
 
-        form.validateFields(['name']).then(r => {
-            if (isTableFilled) {
-                const newList = {
-                    name: listName,
+        form.validateFields(['name']).then(() => {
+            if (!isTableFilled) return;
+
+            const newList = {
+                name: listName,
+                id: listId,
+                words: listWords
+            };
+
+            dispatch(foundListItem ?
+                setList({
                     id: listId,
-                    words: listWords
-                };
+                    item: newList
+                }) :
+                addList(newList)
+            );
 
-                if (foundListItem) {
-                    dispatch(setList({
-                        id: listId,
-                        item: newList
-                    }));
-                } else {
-                    dispatch(addList(newList));
-                }
-
-                history.push('/');
-            }
-            return r;
-        }).catch(err => console.error('Error creating list:', err));
+            history.push('/');
+        }).catch(err => console.warn(err));
     }, [dispatch, form, foundListItem, history, listId, listName, listWords]);
 
     const removeElement = useCallback(() => {
@@ -157,7 +137,7 @@ const PageEditList: FC = () => {
     }, [cleanElementInputValues, rowIdToEdit]);
 
     useEffect(() => {
-        dispatch(setHeaderTitle(foundListItem ? 'Edit list' : 'Create list'));
+        dispatch(setHeaderTitle(`${foundListItem ? 'Edit' : 'Create'} list`));
     }, [dispatch, foundListItem]);
 
     return (
@@ -187,35 +167,35 @@ const PageEditList: FC = () => {
                 Elements *
             </div>
             <Space.Compact className={css.Edit_inputGroup}>
-                <Form.Item<IFieldType>
-                    name={'original'}
-                    className={css.Edit_input}
-                    rules={[{required: true, message: 'Field is required'}]}>
-                    <Input
-                        size={'large'}
-                        placeholder={'Original'}/>
-                </Form.Item>
-                <Form.Item<IFieldType>
-                    name={'translation'}
-                    className={css.Edit_input}
-                    rules={[{required: true, message: 'Field is required'}]}>
-                    <Input
-                        size={'large'}
-                        placeholder={'Translation'}/>
-                </Form.Item>
+                {
+                    INPUT.word.map(el => (
+                        <Form.Item<IFieldType>
+                            key={el}
+                            name={el}
+                            className={css.Edit_input}
+                            rules={[{required: true, message: 'Field is required'}]}>
+                            <Input
+                                size={'large'}
+                                placeholder={el}/>
+                        </Form.Item>
+                    ))
+                }
             </Space.Compact>
             <div className={css.Edit_excerpt}>
                 Extra info
             </div>
             <Space.Compact className={css.Edit_inputGroup}>
-                <Form.Item<IFieldType> name={'excerpt.original'}>
-                    <Input size={'large'}
-                           placeholder={'For original'}/>
-                </Form.Item>
-                <Form.Item<IFieldType> name={'excerpt.translation'}>
-                    <Input size={'large'}
-                           placeholder={'For translation'}/>
-                </Form.Item>
+                {
+                    INPUT.info.map(el => (
+                        <Form.Item<IFieldType>
+                            key={el}
+                            name={el}>
+                            <Input
+                                size={'large'}
+                                placeholder={`For ${el.split('_')[0]}`}/>
+                        </Form.Item>
+                    ))
+                }
             </Space.Compact>
             <div className={css.Edit_buttonGroup}>
                 <Button
@@ -280,8 +260,8 @@ const PageEditList: FC = () => {
                    dataSource={listWords.map(el => ({
                        ...el,
                        key: el.id,
-                       original: formatString(el.original, el.excerpt.original),
-                       translation: formatString(el.translation, el.excerpt.translation)
+                       original: formatString(el.original, el.info_original),
+                       translation: formatString(el.translation, el.info_translation)
                    }))}
                    size={'small'}/>
         </Form>
