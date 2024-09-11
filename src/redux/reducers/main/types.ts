@@ -4,18 +4,16 @@ export interface IMainState {
 }
 
 export interface IListItemSingle {
-    id: number,
-    key: string
+    id: string,
     name: string,
-    words: Array<IElementData>,
+    words: Array<IListItemData>,
 }
 
-export type IElementData = IItemValues & {
-    key: string,
-    id: number
+export type IListItemData = IListItemValues & {
+    id: string
 }
 
-export type IItemValues = {
+export type IListItemValues = {
     original: string,
     translation: string,
     excerpt: {

@@ -5,11 +5,11 @@ const initialState: IMainState = {
     headline: '',
     list: [
         {
+            'id': '0',
             'name': 'Fruits',
             'words': [
                 {
-                    key: '0',
-                    id: 0,
+                    id: '0',
                     original: 'Apple',
                     translation: '苹果',
                     excerpt: {
@@ -18,8 +18,7 @@ const initialState: IMainState = {
                     }
                 },
                 {
-                    key: '1',
-                    id: 1,
+                    id: '1',
                     original: 'Pear',
                     translation: '梨',
                     excerpt: {
@@ -28,8 +27,7 @@ const initialState: IMainState = {
                     }
                 },
                 {
-                    key: '2',
-                    id: 2,
+                    id: '2',
                     original: 'Strawberry',
                     translation: '草莓',
                     excerpt: {
@@ -38,8 +36,7 @@ const initialState: IMainState = {
                     }
                 },
                 {
-                    key: '3',
-                    id: 3,
+                    id: '3',
                     original: 'Orange',
                     translation: '橘子',
                     excerpt: {
@@ -48,8 +45,7 @@ const initialState: IMainState = {
                     }
                 },
                 {
-                    key: '4',
-                    id: 4,
+                    id: '4',
                     original: 'Banana',
                     translation: '香蕉',
                     excerpt: {
@@ -58,8 +54,7 @@ const initialState: IMainState = {
                     }
                 },
                 {
-                    key: '5',
-                    id: 5,
+                    id: '5',
                     original: 'Pineapple',
                     translation: '菠萝',
                     excerpt: {
@@ -68,8 +63,7 @@ const initialState: IMainState = {
                     }
                 },
                 {
-                    key: '6',
-                    id: 6,
+                    id: '6',
                     original: 'Blueberry',
                     translation: '蓝莓',
                     excerpt: {
@@ -78,8 +72,7 @@ const initialState: IMainState = {
                     }
                 },
                 {
-                    key: '7',
-                    id: 7,
+                    id: '7',
                     original: 'Cherry',
                     translation: '樱桃',
                     excerpt: {
@@ -88,15 +81,13 @@ const initialState: IMainState = {
                     }
                 }
             ],
-            'id': 0,
-            'key': '0'
         },
         {
+            'id': '1',
             'name': 'Garden stuff',
             'words': [
                 {
-                    key: '0',
-                    id: 3,
+                    id: '0',
                     original: 'Яблоко',
                     translation: 'Apple',
                     excerpt: {
@@ -105,8 +96,7 @@ const initialState: IMainState = {
                     }
                 },
                 {
-                    key: '1',
-                    id: 4,
+                    id: '1',
                     original: 'Груша',
                     translation: 'Pear',
                     excerpt: {
@@ -115,37 +105,35 @@ const initialState: IMainState = {
                     }
                 }
             ],
-            'id': 1,
-            'key': '1'
         }
     ]
 };
 
 const mainSlice = createSlice({
-  name: 'main',
-  initialState,
-  reducers: {
-      setHeaderTitle(state, action: PayloadAction<string>) {
-          state.headline = action.payload;
-      },
+    name: 'main',
+    initialState,
+    reducers: {
+        setHeaderTitle(state, action: PayloadAction<string>) {
+            state.headline = action.payload;
+        },
 
-      addList(state, action: PayloadAction<IListItemSingle>){
-          state.list = [...state.list, action.payload]
-      },
-      deleteList(state, action: PayloadAction<number>) {
-          state.list = state.list.filter(el => el.id !== action.payload)
-      },
-      changeList(state, action: PayloadAction<{ item: IListItemSingle, id: number  }>) {
-          state.list = state.list.map(el => el.id === action.payload.id ? {...action.payload.item} : el)
-      }
-  },
+        addList(state, action: PayloadAction<IListItemSingle>) {
+            state.list = [action.payload, ...state.list]
+        },
+        deleteList(state, action: PayloadAction<string>) {
+            state.list = state.list.filter(el => el.id !== action.payload)
+        },
+        setList(state, action: PayloadAction<{ item: IListItemSingle, id: string }>) {
+            state.list = state.list.map(el => el.id === action.payload.id ? {...action.payload.item} : el)
+        },
+    },
 });
 
 export const {
-  setHeaderTitle,
-  addList,
-  deleteList,
-  changeList,
+    setHeaderTitle,
+    addList,
+    deleteList,
+    setList,
 } = mainSlice.actions;
 
 export default mainSlice.reducer;

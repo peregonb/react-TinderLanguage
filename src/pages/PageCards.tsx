@@ -1,6 +1,6 @@
 import { FC, memo, useCallback, useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { IElementData } from '@redux/reducers/main/types.ts';
+import { IListItemData } from '@redux/reducers/main/types.ts';
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons'
 import { setHeaderTitle } from '@redux/reducers/main';
 import { useSelector } from '@redux/hooks.ts';
@@ -40,15 +40,15 @@ const Deck: FC<{ counter: number }> = ({counter}) => {
 // TODO rewrite
 
 const PageCards: FC = () => {
-    const {params} = useRouteMatch<{ itemId: string }>();
+    const {params} = useRouteMatch<{ listId: string }>();
     const list = useSelector(mainRootSelectors.list)
 
-    const id = params.itemId;
+    const id = params.listId;
 
     console.log(id)
-    const main = list.find(el => el.id === parseInt(id));
+    const main = list.find(el => el.id === id);
     const [isActiveCard, setIsActiveCard] = useState<boolean>(false);
-    const [words, setWords] = useState<IElementData[]>(list.find(el => el.key === id)!.words);
+    const [words, setWords] = useState<IListItemData[]>(list.find(el => el.id === id)!.words);
     const [cardTranslateX, setCardTranslateX] = useState<{ startValue: number, difference: number }>({
         startValue: 0,
         difference: 0
@@ -58,7 +58,7 @@ const PageCards: FC = () => {
         limit: words.length - 1
     });
     const currentWord = words[currentWordInfo.index];
-    const [wordsToRepeat, setWordsToRepeat] = useState<IElementData[]>([]);
+    const [wordsToRepeat, setWordsToRepeat] = useState<IListItemData[]>([]);
 
     const handleGesture = useCallback(() => {
         const difference = touchendX - touchstartX;

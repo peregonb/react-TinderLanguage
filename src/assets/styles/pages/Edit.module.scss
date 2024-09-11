@@ -1,8 +1,9 @@
-.Create {
-
+.Edit {
   &_title {
     font-weight: 500;
-    font-size: 16px;
+    font-size: 18px;
+    line-height: 1.2;
+    word-break: break-word;
 
     &:not(:first-of-type) {
       margin-top: 15px;
@@ -10,19 +11,14 @@
   }
 
   &_buttons {
-    button:not(:last-of-type) {
-      margin-right: 10px !important;
-    }
+    display: flex;
+    gap: 0 10px;
+    flex-shrink: 0;
   }
 
   &_input {
-    margin-top: 5px;
-    transition: border-color $t;
-
-    &__error {
-      border-color: #ab1c2b;
-      transition: border-color $t;
-    }
+    margin-top: 8px;
+    margin-bottom: 0;
   }
 
   &_placeholder {
@@ -40,9 +36,12 @@
 
   &_inputGroup {
     margin-top: 5px;
+    display: flex;
+    gap: 0 4px;
 
-    input {
+    & > div {
       width: 50% !important;
+      margin: 0;
     }
   }
 
@@ -50,6 +49,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 0 12px
   }
 
   &_buttonGroup {
@@ -65,6 +65,7 @@
 
   &_excerpt {
     font-weight: 500;
+    font-size: 16px;
     margin-top: 10px;
   }
 

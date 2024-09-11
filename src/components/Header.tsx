@@ -13,7 +13,7 @@ const HeaderButton: FC = () => {
     switch (pathname) {
         case '/':
             return (
-                <Link to={'/create'}>
+                <Link to={'/list'}>
                     <Button type={'primary'}>Create List</Button>
                 </Link>
             )

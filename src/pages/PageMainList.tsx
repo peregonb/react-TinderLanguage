@@ -30,34 +30,35 @@ const PageMainList: FC = () => {
                 size={'small'}
                 bordered
                 dataSource={listTitles}
-                renderItem={(item, index) => (
-                    <List.Item className={css.List_item}>
-                        <Link
-                            to={`/play/id${list[index].id}`}
-                            className={css.List_text}>
-                            {item}
-                        </Link>
-                        <div className={css.List_icons}>
+                renderItem={item => {
+                    const id = list.find(el => el.name === item)!.id;
+
+                    return (
+                        <List.Item className={css.List_item}>
                             <Link
-                                className={cn(css.List_icon, css.List_icon_edit)}
-                                to={`/edit/id${list[index].id}`}>
-                                <EditOutlined/>
+                                to={`/play/${id}`}
+                                className={css.List_text}>
+                                {item}
                             </Link>
-                            <Popconfirm
-                                title={'Are you sure to delete this list?'}
-                                onConfirm={() => {
-                                    console.log(index)
-                                    dispatch(deleteList(index));
-                                }}
-                                okText={'Yes'}
-                                cancelText={'No'}
-                                placement={'left'}
-                            >
-                                <DeleteOutlined className={cn(css.List_icon, css.List_icon_delete)}/>
-                            </Popconfirm>
-                        </div>
-                    </List.Item>
-                )}
+                            <div className={css.List_icons}>
+                                <Link
+                                    className={cn(css.List_icon, css.List_icon_edit)}
+                                    to={`/list/${id}`}>
+                                    <EditOutlined/>
+                                </Link>
+                                <Popconfirm
+                                    title={'Are you sure to delete this list?'}
+                                    onConfirm={() => dispatch(deleteList(id))}
+                                    okText={'Yes'}
+                                    cancelText={'No'}
+                                    placement={'left'}
+                                >
+                                    <DeleteOutlined className={cn(css.List_icon, css.List_icon_delete)}/>
+                                </Popconfirm>
+                            </div>
+                        </List.Item>
+                    );
+                }}
             />
             <Reset/>
         </>
