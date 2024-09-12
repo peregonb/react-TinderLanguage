@@ -1,14 +1,14 @@
 import { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Divider, Empty, Input, Table, Space, Form } from 'antd';
-import { getUniqID } from '@components/common/helpers';
-import { IListItemData, IListItemSingle, IListItemValues } from '@redux/reducers/main/types';
+import { getUniqID } from '../../common/helpers.ts';
+import { IListItemData, IListItemSingle, IListItemValues } from '@redux/reducers/main/types.ts';
 import { useHistory, useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from '@redux/hooks';
-import { mainRootSelectors } from '@redux/reducers/main/selectors';
+import { useSelector, useDispatch } from '@redux/hooks.ts';
+import { mainRootSelectors } from '@redux/reducers/main/selectors.ts';
 import { addList, setList, setHeaderTitle } from '@redux/reducers/main';
 import { PlusOutlined } from '@ant-design/icons';
 
-import css from '@styles/pages/Edit.module.scss';
+import css from '@pages/Edit/edit.module.scss';
 import cn from 'classnames';
 
 type IInputName = 'name' | 'original' | 'translation' | 'info_original' | 'info_translation';
@@ -33,7 +33,7 @@ const COLUMNS = [
 
 const formatString = (a: string, b: string): string => `${a}${b ? ` (${b})` : ''}`;
 
-const PageEditList: FC = () => {
+const Edit: FC = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const [form] = Form.useForm();
@@ -49,11 +49,11 @@ const PageEditList: FC = () => {
     const [rowIdToEdit, setRowIdToEdit] = useState<Nullable<string>>(null);
 
     const listId = useMemo(() => foundListItem ? foundListItem.id : getUniqID(), [foundListItem]);
-    const isTableChanged = useMemo(() => JSON.stringify(foundListItem?.words ?? []) !== JSON.stringify(listWords ?? []), [foundListItem, listWords]);
+    const isTableChanged = useMemo(() =>
+        JSON.stringify(foundListItem?.words ?? []) !== JSON.stringify(listWords ?? []), [foundListItem, listWords]);
 
-    const cleanElementInputValues = useCallback(() => {
-        form.setFieldsValue(Object.fromEntries(INPUT.full.map(el => [el, ''])));
-    }, [form]);
+    const cleanElementInputValues = useCallback(() =>
+        form.setFieldsValue(Object.fromEntries(INPUT.full.map(el => [el, '']))), [form]);
 
     const setListRowId = useCallback((id: string) => {
         const foundRow: IListItemData = listWords.find(el => el.id === id)!;
@@ -268,4 +268,4 @@ const PageEditList: FC = () => {
     );
 };
 
-export default memo(PageEditList);
+export default memo(Edit);

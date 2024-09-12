@@ -3,15 +3,14 @@ import { List, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { IListItemSingle } from '@redux/reducers/main/types';
 import { Link } from 'react-router-dom';
-import Reset from '@components/Reset';
 import { useDispatch, useSelector } from '@redux/hooks';
 import { mainRootSelectors } from '@redux/reducers/main/selectors';
 import { deleteList, setHeaderTitle } from '@redux/reducers/main';
 
-import css from '@styles/pages/List.module.scss'
+import css from '@pages/Catalog/catalog.module.scss'
 import cn from 'classnames';
 
-const PageMainList: FC = () => {
+const Catalog: FC = () => {
     const dispatch = useDispatch();
     const list = useSelector(mainRootSelectors.list);
 
@@ -26,7 +25,7 @@ const PageMainList: FC = () => {
     return (
         <>
             <List
-                className={css.List}
+                className={css.Catalog}
                 size={'small'}
                 bordered
                 dataSource={listTitles}
@@ -34,15 +33,15 @@ const PageMainList: FC = () => {
                     const id = list.find(el => el.name === item)!.id;
 
                     return (
-                        <List.Item className={css.List_item}>
+                        <List.Item className={css.Catalog_item}>
                             <Link
                                 to={`/play/${id}`}
-                                className={css.List_text}>
+                                className={css.Catalog_text}>
                                 {item}
                             </Link>
-                            <div className={css.List_icons}>
+                            <div className={css.Catalog_icons}>
                                 <Link
-                                    className={cn(css.List_icon, css.List_icon_edit)}
+                                    className={cn(css.Catalog_icon, css.Catalog_icon_edit)}
                                     to={`/list/${id}`}>
                                     <EditOutlined/>
                                 </Link>
@@ -53,16 +52,15 @@ const PageMainList: FC = () => {
                                     cancelText={'No'}
                                     placement={'left'}
                                 >
-                                    <DeleteOutlined className={cn(css.List_icon, css.List_icon_delete)}/>
+                                    <DeleteOutlined className={cn(css.Catalog_icon, css.Catalog_icon_delete)}/>
                                 </Popconfirm>
                             </div>
                         </List.Item>
                     );
                 }}
             />
-            <Reset/>
         </>
     )
 }
 
-export default memo(PageMainList);
+export default memo(Catalog);

@@ -1,10 +1,10 @@
 import { FC, memo, useCallback, useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { IListItemData } from '@redux/reducers/main/types.ts';
+import { IListItemData } from '@redux/reducers/main/types';
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons'
 import { setHeaderTitle } from '@redux/reducers/main';
-import { useDispatch, useSelector } from '@redux/hooks.ts';
-import { mainRootSelectors } from '@redux/reducers/main/selectors.ts';
+import { useDispatch, useSelector } from '@redux/hooks';
+import { mainRootSelectors } from '@redux/reducers/main/selectors';
 
 
 const className = 'play';
@@ -39,7 +39,7 @@ const Deck: FC<{ counter: number }> = ({counter}) => {
 }
 // TODO rewrite
 
-const PageCards: FC = () => {
+const Cards: FC = () => {
     const {params} = useRouteMatch<{ listId: string }>();
     const list = useSelector(mainRootSelectors.list)
     const dispatch = useDispatch();
@@ -85,9 +85,7 @@ const PageCards: FC = () => {
     }, [currentWord, currentWordInfo.index, currentWordInfo.limit, wordsToRepeat]);
 
     useEffect(() => {
-        if (main) {
-            dispatch(setHeaderTitle(main.name));
-        }
+        dispatch(setHeaderTitle(main?.name ?? 'List'));
 
         console.log(words);
     }, [dispatch, main, words]);
@@ -120,11 +118,11 @@ const PageCards: FC = () => {
                              onClick={() => setIsActiveCard(val => !val)}>
                             <div className={`${className}-card-front`}>
                                 {currentWord.original} <br/>
-                                <span>{currentWord.excerpt.original}</span>
+                                <span>{currentWord.info_original}</span>
                             </div>
                             <div className={`${className}-card-back`}>
                                 {currentWord.translation} <br/>
-                                <span>{currentWord.excerpt.translation}</span>
+                                <span>{currentWord.info_translation}</span>
                             </div>
                         </div>
                         <div className={`${className}-shadow`}
@@ -152,4 +150,4 @@ const PageCards: FC = () => {
     )
 }
 
-export default memo(PageCards);
+export default memo(Cards);

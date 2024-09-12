@@ -3,6 +3,7 @@
   overscroll-behavior: none;
   height: 100dvh;
   overflow: hidden;
+  min-width: 320px;
 
   &_inner {
     height: 100dvh;

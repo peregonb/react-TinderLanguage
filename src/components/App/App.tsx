@@ -1,13 +1,13 @@
 import { FC, memo } from 'react';
 import { Layout } from 'antd';
 import { Route } from 'react-router-dom';
-import PageMainList from '@pages/PageMainList';
-import PageCards from '@pages/PageCards';
-import PageEditList from '@pages/PageEditList';
-import Header from '@components/Header';
+import PageMainList from '@pages/Catalog/Catalog.tsx';
+import PageCards from '@pages/Cards/Cards.tsx';
+import PageEditList from '@pages/Edit/Edit.tsx';
+import Header from '@components/Header/Header.tsx';
 
 import '@styles/App.scss'
-import css from '@styles/components/layout.module.scss'
+import css from '@components/App/layout.module.scss'
 import cn from 'classnames';
 
 const App: FC = () => (

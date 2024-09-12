@@ -1,0 +1,75 @@
+.Header {
+  height: 60px;
+  background-color: rgba(#ffffff, .075);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &_headline {
+    font-size: 24px;
+    color: #ffffff;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0 20px;
+  }
+
+  &_buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0 12px;
+    flex-shrink: 0;
+  }
+
+  &_round {
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+    padding: 0;
+    display: flex;
+    color: #ffffff;
+    position: relative;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    transition: background-color $t;
+
+    &:hover,
+    &:active {
+      background-color: rgba(#fff, .1);
+    }
+  }
+
+  &_menu {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0 4px;
+
+    &__item {
+      min-height: 40px;
+      width: 100%;
+      font-size: 16px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      cursor: pointer;
+      transition: opacity $t;
+
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+}
