@@ -46,7 +46,6 @@ const Cards: FC = () => {
 
     const id = params.listId;
     const [isActiveCard, setIsActiveCard] = useState<boolean>(false);
-
     const foundList = useMemo(() => list.find(el => el.id === id), [id, list]);
 
     useEffect(() => {
@@ -59,13 +58,7 @@ const Cards: FC = () => {
     const currentWord = useMemo(() => words[currentWordIndex], [currentWordIndex, words]);
     const currentWordsLimit = useMemo(() => words.length - 1, [words]);
 
-    // const [cardTranslateX, setCardTranslateX] = useState<{ startValue: number, difference: number }>({
-    //     startValue: 0,
-    //     difference: 0
-    // });
-
     const [touchDifference, setTouchDifference] = useState<number>(0);
-
     const [wordsToRepeat, setWordsToRepeat] = useState<IListItemData[]>([]);
 
     const cardEvents = useMemo(() => {
@@ -92,6 +85,7 @@ const Cards: FC = () => {
                     console.log('finish', {wordsToRepeat});
 
                     setWords(wordsToRepeat);
+                    setCurrentWordIndex(0);
                 }
             }
         }
@@ -117,8 +111,8 @@ const Cards: FC = () => {
     }, [currentWord, currentWordIndex, currentWordsLimit, wordsToRepeat]);
 
     const shadowStyles = useMemo(() => {
-        // const color = -touchDifference > 0 ? '#1cab9c' : -touchDifference === 0 ? 'transparent' : '#ab1c2b';
         const color = -touchDifference > 0 ? '#1cab9c' : '#ab1c2b';
+
         return {
             transform: `translateX(${-touchDifference}px)`,
             backgroundColor: color,
