@@ -7,7 +7,6 @@ import { mainRootSelectors } from '@redux/reducers/main/selectors';
 
 import css from '@pages/Cards/cards.module.scss'
 import cn from 'classnames';
-import { debounce } from '../../common/helpers.ts';
 
 const scrollLimit = 50;
 const deckCardDistance = 3;
@@ -73,12 +72,16 @@ const Cards: FC = () => {
         let startX = 0;
 
         const handleGesture = (difference: number) => {
+            console.log({difference});
+
             if (difference <= -scrollLimit) {
+                setIsActiveCard(false);
                 setWordsToRepeat(val => val.concat(currentWord));
                 console.log('swiped left!');
             }
             if (difference >= scrollLimit) {
-                console.log('swiped right!')
+                console.log('swiped right!');
+                setIsActiveCard(false);
             }
 
             if (!(difference > -scrollLimit && difference < scrollLimit)) {
@@ -97,22 +100,25 @@ const Cards: FC = () => {
             onTouchStartCapture: (e: TouchEvent<HTMLDivElement>) => {
                 startX = round(e.changedTouches[0].screenX);
             },
-            onTouchMove: debounce((e: TouchEvent<HTMLDivElement>) => {
+            onTouchMove: (e: TouchEvent<HTMLDivElement>) => {
                 const distance = startX - round(e.changedTouches[0].screenX);
 
                 setTouchDifference(max(-scrollLimit, min(scrollLimit, distance)));
-            }, 10),
-            onTouchEnd: (e: TouchEvent<HTMLDivElement>) => {
-                handleGesture(round(e.changedTouches[0].screenX) - startX);
-                setTouchDifference(0);
+            },
+            onTouchEndCapture: (e: TouchEvent<HTMLDivElement>) => {
+                const endDifferance = round(e.changedTouches[0].screenX) - startX;
+
+                if (endDifferance !== 0) {
+                    handleGesture(endDifferance);
+                    setTouchDifference(0);
+                }
             },
         }
     }, [currentWord, currentWordIndex, currentWordsLimit, wordsToRepeat]);
 
-    console.log('RERENDER');
-
     const shadowStyles = useMemo(() => {
-        const color = -touchDifference > 0 ? '#1cab9c' : -touchDifference === 0 ? 'transparent' : '#ab1c2b';
+        // const color = -touchDifference > 0 ? '#1cab9c' : -touchDifference === 0 ? 'transparent' : '#ab1c2b';
+        const color = -touchDifference > 0 ? '#1cab9c' : '#ab1c2b';
         return {
             transform: `translateX(${-touchDifference}px)`,
             backgroundColor: color,
