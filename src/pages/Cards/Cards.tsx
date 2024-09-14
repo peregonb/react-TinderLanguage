@@ -1,30 +1,31 @@
-import { FC, memo, useCallback, useEffect, useState } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { FC, memo, TouchEvent, useEffect, useMemo, useState } from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { IListItemData } from '@redux/reducers/main/types';
 import { CloseOutlined, CheckOutlined } from '@ant-design/icons'
-import { setHeaderTitle } from '@redux/reducers/main';
-import { useDispatch, useSelector } from '@redux/hooks';
+import { useSelector } from '@redux/hooks';
 import { mainRootSelectors } from '@redux/reducers/main/selectors';
 
+import css from '@pages/Cards/cards.module.scss'
+import cn from 'classnames';
+import { debounce } from '../../common/helpers.ts';
 
-const className = 'play';
-let touchstartX = 0;
-let touchendX = 0;
 const scrollLimit = 50;
 const deckCardDistance = 3;
+const deckLength = 5;
+const {round, min, max, abs} = Math;
 
-const Card: FC<{ shift: number }> = ({shift}) => (
-    <div className={`${className}-card`}
+const Card: FC<{ shift: number }> = memo(({shift}) => (
+    <div className={css.Cards_single}
          style={{
              transform: `translate(${deckCardDistance * shift}px, ${deckCardDistance * shift}px)`,
              zIndex: -shift
          }}>
-        <div className={`${className}-card-front`}/>
-        <div className={`${className}-card-back`}/>
+        <div className={css.Cards_single__front}/>
+        <div className={css.Cards_single__back}/>
     </div>
-);
+));
 
-const Deck: FC<{ counter: number }> = ({counter}) => {
+const Deck: FC<{ counter: number }> = memo(({counter}) => {
     const cards = [];
 
     for (let i = 0; i < counter; i++) {
@@ -32,120 +33,124 @@ const Deck: FC<{ counter: number }> = ({counter}) => {
     }
 
     return (
-        <div className={`${className}-deck`}>
+        <div className={css.Cards_deck}>
             {cards}
         </div>
     )
-}
-// TODO rewrite
+});
 
 const Cards: FC = () => {
     const {params} = useRouteMatch<{ listId: string }>();
     const list = useSelector(mainRootSelectors.list)
-    const dispatch = useDispatch();
+    const history = useHistory();
+    // const dispatch = useDispatch();
 
     const id = params.listId;
-
-    console.log(id)
-    const main = list.find(el => el.id === id);
     const [isActiveCard, setIsActiveCard] = useState<boolean>(false);
-    const [words, setWords] = useState<IListItemData[]>(list.find(el => el.id === id)!.words);
-    const [cardTranslateX, setCardTranslateX] = useState<{ startValue: number, difference: number }>({
-        startValue: 0,
-        difference: 0
-    });
-    const [currentWordInfo, setCurrentWordInfo] = useState<{ index: number, limit: number }>({
-        index: 0,
-        limit: words.length - 1
-    });
-    const currentWord = words[currentWordInfo.index];
-    const [wordsToRepeat, setWordsToRepeat] = useState<IListItemData[]>([]);
 
-    const handleGesture = useCallback(() => {
-        const difference = touchendX - touchstartX;
-
-        if (difference <= -scrollLimit) {
-            setWordsToRepeat(val => val.concat(currentWord));
-            console.log('swiped left!');
-        }
-        if (difference >= scrollLimit) {
-            console.log('swiped right!')
-        }
-
-        if (!(difference > -scrollLimit && difference < scrollLimit)) {
-            console.log(currentWordInfo.index, currentWordInfo.limit, currentWord)
-            if (currentWordInfo.index !== currentWordInfo.limit) {
-                setCurrentWordInfo(val => ({...val, index: ++val.index}));
-            } else {
-                console.log('finish', {wordsToRepeat});
-
-                setWords(wordsToRepeat);
-            }
-        }
-    }, [currentWord, currentWordInfo.index, currentWordInfo.limit, wordsToRepeat]);
+    const foundList = useMemo(() => list.find(el => el.id === id), [id, list]);
 
     useEffect(() => {
-        dispatch(setHeaderTitle(main?.name ?? 'List'));
+        if (!foundList) history.push('/');
+    }, [foundList, history]);
 
-        console.log(words);
-    }, [dispatch, main, words]);
+    const [words, setWords] = useState<IListItemData[]>(foundList?.words ?? []);
+    const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
+
+    const currentWord = useMemo(() => words[currentWordIndex], [currentWordIndex, words]);
+    const currentWordsLimit = useMemo(() => words.length - 1, [words]);
+
+    // const [cardTranslateX, setCardTranslateX] = useState<{ startValue: number, difference: number }>({
+    //     startValue: 0,
+    //     difference: 0
+    // });
+
+    const [touchDifference, setTouchDifference] = useState<number>(0);
+
+    const [wordsToRepeat, setWordsToRepeat] = useState<IListItemData[]>([]);
+
+    const cardEvents = useMemo(() => {
+        let startX = 0;
+
+        const handleGesture = (difference: number) => {
+            if (difference <= -scrollLimit) {
+                setWordsToRepeat(val => val.concat(currentWord));
+                console.log('swiped left!');
+            }
+            if (difference >= scrollLimit) {
+                console.log('swiped right!')
+            }
+
+            if (!(difference > -scrollLimit && difference < scrollLimit)) {
+                console.log(currentWordIndex, currentWordsLimit, currentWord)
+                if (currentWordIndex !== currentWordsLimit) {
+                    setCurrentWordIndex(val => ++val);
+                } else {
+                    console.log('finish', {wordsToRepeat});
+
+                    setWords(wordsToRepeat);
+                }
+            }
+        }
+
+        return {
+            onTouchStartCapture: (e: TouchEvent<HTMLDivElement>) => {
+                startX = round(e.changedTouches[0].screenX);
+            },
+            onTouchMove: debounce((e: TouchEvent<HTMLDivElement>) => {
+                const distance = startX - round(e.changedTouches[0].screenX);
+
+                setTouchDifference(max(-scrollLimit, min(scrollLimit, distance)));
+            }, 10),
+            onTouchEnd: (e: TouchEvent<HTMLDivElement>) => {
+                handleGesture(round(e.changedTouches[0].screenX) - startX);
+                setTouchDifference(0);
+            },
+        }
+    }, [currentWord, currentWordIndex, currentWordsLimit, wordsToRepeat]);
+
+    console.log('RERENDER');
+
+    const shadowStyles = useMemo(() => {
+        const color = -touchDifference > 0 ? '#1cab9c' : -touchDifference === 0 ? 'transparent' : '#ab1c2b';
+        return {
+            transform: `translateX(${-touchDifference}px)`,
+            backgroundColor: color,
+            color: -touchDifference !== 0 ? '#ffffff' : 'transparent',
+            boxShadow: `rgba(${color}, .4) 0 2px 4px, rgba(${color}, .3) 0 7px 13px -3px, rgba(${color}, .2) 0 -3px 0 inset`,
+            opacity: abs(touchDifference / scrollLimit)
+        }
+    }, [touchDifference]);
 
     return (
         <>
-            <div className={`${className}`}>
-                <div className={`${className}-wrapper`}>
+            <div className={css.Cards}>
+                <div className={css.Cards_wrapper}>
                     {currentWord && <>
-                        <div className={`${className}-card${isActiveCard ? ' active' : ''}`}
-                             onTouchEnd={e => {
-                                 touchendX = e.changedTouches[0].screenX;
-                                 handleGesture();
-                                 setCardTranslateX(val => ({...val, difference: 0}))
-                             }}
-                             onTouchMove={e => {
-                                 setCardTranslateX(val => {
-                                     const distance = val.startValue - e.changedTouches[0].screenX;
-                                     return {
-                                         ...val,
-                                         difference: distance > scrollLimit ? scrollLimit : distance < -scrollLimit ? -scrollLimit : distance
-                                     }
-                                 });
-                             }}
-                             onTouchStart={e => touchstartX = e.changedTouches[0].screenX}
-                             onTouchStartCapture={e => {
-                                 touchstartX = e.changedTouches[0].screenX
-                                 setCardTranslateX(val => ({...val, startValue: e.changedTouches[0].screenX}))
-                             }}
+                        <div className={cn(css.Cards_single, {
+                            [css.Cards_single_active]: isActiveCard
+                        })}
+                             {...cardEvents}
                              onClick={() => setIsActiveCard(val => !val)}>
-                            <div className={`${className}-card-front`}>
+                            <div className={css.Cards_single__front}>
                                 {currentWord.original} <br/>
                                 <span>{currentWord.info_original}</span>
                             </div>
-                            <div className={`${className}-card-back`}>
+                            <div className={css.Cards_single__back}>
                                 {currentWord.translation} <br/>
                                 <span>{currentWord.info_translation}</span>
                             </div>
                         </div>
-                        <div className={`${className}-shadow`}
-                             style={(() => {
-                                 const {difference} = cardTranslateX;
-                                 const color = -difference > 0 ? '#1cab9c' : -difference === 0 ? 'transparent' : '#ab1c2b';
-                                 return {
-                                     transform: `translateX(${-difference}px)`,
-                                     backgroundColor: color,
-                                     color: -difference !== 0 ? '#ffffff' : 'transparent',
-                                     boxShadow: `rgba(${color}, .4) 0 2px 4px, rgba(${color}, .3) 0 7px 13px -3px, rgba(${color}, .2) 0 -3px 0 inset`,
-                                     opacity: Math.abs(difference / scrollLimit)
-                                 }
-                             })()}>
-                            <CloseOutlined/>
-                            <CheckOutlined/>
+                        <div className={css.Cards_shadow}
+                             style={shadowStyles}
+                        >
+                            <CloseOutlined className={css.Cards_shadow__close}/>
+                            <CheckOutlined className={css.Cards_shadow__check}/>
                         </div>
                     </>}
-                    <Deck
-                        counter={currentWordInfo.limit - currentWordInfo.index > 5 ? 5 : currentWordInfo.limit - currentWordInfo.index}/>
+                    <Deck counter={min(currentWordsLimit - currentWordIndex, deckLength)}/>
                 </div>
             </div>
-            <style>{`html,body{overflow: hidden}`}</style>
         </>
     )
 }

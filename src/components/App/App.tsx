@@ -1,10 +1,11 @@
 import { FC, memo } from 'react';
 import { Layout } from 'antd';
 import { Route } from 'react-router-dom';
-import PageMainList from '@pages/Catalog/Catalog.tsx';
-import PageCards from '@pages/Cards/Cards.tsx';
-import PageEditList from '@pages/Edit/Edit.tsx';
-import Header from '@components/Header/Header.tsx';
+import Catalog from '@pages/Catalog/Catalog';
+import Cards from '@pages/Cards/Cards';
+import Edit from '@pages/Edit/Edit';
+import Bulk from '@pages/Bulk/Bulk';
+import Header from '@components/Header/Header';
 
 import '@styles/App.scss'
 import css from '@components/App/layout.module.scss'
@@ -15,10 +16,11 @@ const App: FC = () => (
         <div className={css.Layout_inner}>
             <Header/>
             <Layout className={cn(css.Layout_wrapper, 'wrapper')}>
-                <Route path={'/'} exact render={() => <PageMainList/>}/>
-                <Route path={'/list'} exact render={() => <PageEditList/>}/>
-                <Route path={'/list/:listId'} render={() => <PageEditList/>}/>
-                <Route path={'/play/:listId?'} render={() => <PageCards/>}/>
+                <Route path={'/'} exact render={() => <Catalog/>}/>
+                <Route path={'/list'} exact render={() => <Edit/>}/>
+                <Route path={'/bulk'} exact render={() => <Bulk/>}/>
+                <Route path={'/list/:listId'} render={() => <Edit/>}/>
+                <Route path={'/play/:listId?'} render={() => <Cards/>}/>
             </Layout>
         </div>
     </Layout>

@@ -5,9 +5,9 @@ const initialState: IMainState = {
     headline: '',
     list: [
         {
-            'id': '0',
-            'name': 'Fruits',
-            'words': [
+            id: '0',
+            name: 'Fruits',
+            words: [
                 {
                     id: '0',
                     original: 'Apple',
@@ -64,27 +64,27 @@ const initialState: IMainState = {
                     info_original: '',
                     info_translation: 'Yīngtáo'
                 }
-            ],
+            ]
         },
         {
-            'id': '1',
-            'name': 'Garden stuff',
-            'words': [
+            "id": "1",
+            "name": "Garden stuff",
+            "words": [
                 {
-                    id: '0',
-                    original: 'Яблоко',
-                    translation: 'Apple',
-                    info_original: 'yabloko',
-                    info_translation: 'эпл'
+                    "id": "0",
+                    "original": "Яблоко",
+                    "translation": "Apple",
+                    "info_original": "yabloko",
+                    "info_translation": "эпл"
                 },
                 {
-                    id: '1',
-                    original: 'Груша',
-                    translation: 'Pear',
-                    info_original: 'grusha',
-                    info_translation: 'пир'
+                    "id": "1",
+                    "original": "Груша",
+                    "translation": "Pear",
+                    "info_original": "grusha",
+                    "info_translation": "пир"
                 }
-            ],
+            ]
         }
     ]
 };

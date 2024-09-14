@@ -91,9 +91,11 @@ const Header: FC = () => {
                                  className={css.Header_menu__item}>
                                 Reset app
                             </div>
-                            <div className={css.Header_menu__item}>
-                                Bulk import
-                            </div>
+                            <Link to={'/bulk'} onClick={triggerMenu}>
+                                <div className={css.Header_menu__item}>
+                                    Bulk import
+                                </div>
+                            </Link>
                             <div className={css.Header_menu__item}>
                                 Font settings
                             </div>

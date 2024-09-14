@@ -1,5 +1,5 @@
-import { IMainState } from '@redux/reducers/main/types.ts';
-import createSelector, { IAppSelector } from '@redux/utils/createSelector.ts';
+import { IMainState } from '@redux/reducers/main/types';
+import createSelector, { IAppSelector } from '@redux/utils/createSelector';
 
 export const mainSelector: IAppSelector<IMainState> = state => state.main;
 

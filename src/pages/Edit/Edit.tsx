@@ -1,10 +1,10 @@
 import { FC, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Divider, Empty, Input, Table, Space, Form } from 'antd';
-import { getUniqID } from '../../common/helpers.ts';
-import { IListItemData, IListItemSingle, IListItemValues } from '@redux/reducers/main/types.ts';
+import { getUniqID } from '../../common/helpers';
+import { IListItemData, IListItemSingle, IListItemValues } from '@redux/reducers/main/types';
 import { useHistory, useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from '@redux/hooks.ts';
-import { mainRootSelectors } from '@redux/reducers/main/selectors.ts';
+import { useSelector, useDispatch } from '@redux/hooks';
+import { mainRootSelectors } from '@redux/reducers/main/selectors';
 import { addList, setList, setHeaderTitle } from '@redux/reducers/main';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -143,7 +143,7 @@ const Edit: FC = () => {
     return (
         <Form
             className={css.Edit}
-            name={'basic'}
+            name={'edit'}
             form={form}
             initialValues={{
                 name: listName,
@@ -260,8 +260,8 @@ const Edit: FC = () => {
                    dataSource={listWords.map(el => ({
                        ...el,
                        key: el.id,
-                       original: formatString(el.original, el.info_original),
-                       translation: formatString(el.translation, el.info_translation)
+                       original: formatString(el.original, (el.info_original ?? '')),
+                       translation: formatString(el.translation, (el.info_translation ?? ''))
                    }))}
                    size={'small'}/>
         </Form>
