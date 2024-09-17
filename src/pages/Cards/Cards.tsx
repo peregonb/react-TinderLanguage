@@ -85,13 +85,18 @@ const Cards: FC = () => {
                     console.log('finish', {wordsToRepeat});
 
                     setWords(wordsToRepeat);
+                    setWordsToRepeat([]);
                     setCurrentWordIndex(0);
+
+                    if (!wordsToRepeat.length) {
+                        console.log('DONE');
+                    }
                 }
             }
         }
 
         return {
-            onTouchStartCapture: (e: TouchEvent<HTMLDivElement>) => {
+            onTouchStart: (e: TouchEvent<HTMLDivElement>) => {
                 startX = round(e.changedTouches[0].screenX);
             },
             onTouchMove: (e: TouchEvent<HTMLDivElement>) => {
@@ -99,14 +104,14 @@ const Cards: FC = () => {
 
                 setTouchDifference(max(-scrollLimit, min(scrollLimit, distance)));
             },
-            onTouchEndCapture: (e: TouchEvent<HTMLDivElement>) => {
+            onTouchEnd: (e: TouchEvent<HTMLDivElement>) => {
                 const endDifferance = round(e.changedTouches[0].screenX) - startX;
 
                 if (endDifferance !== 0) {
                     handleGesture(endDifferance);
                     setTouchDifference(0);
                 }
-            },
+            }
         }
     }, [currentWord, currentWordIndex, currentWordsLimit, wordsToRepeat]);
 

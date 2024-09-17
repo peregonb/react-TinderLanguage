@@ -3,8 +3,8 @@
   justify-content: center;
   align-items: center;
 
-  $cardWidth: 70vw;
-  $cardHeight: calc(70vw / 3 * 4);
+  $cardWidth: 250px;
+  $cardHeight: calc(#{$cardWidth} / 3 * 4);
   $cardRadius: 25px;
 
   &_single {
@@ -17,14 +17,13 @@
     border-radius: $cardRadius;
     height: $cardHeight;
     width: $cardWidth;
-    transition: transform $t;
 
     &__front,
     &__back {
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: transform .5s ease-in-out, opacity .5s ease-in-out;
+      //transition: transform .5s ease-in-out, opacity .5s ease-in-out;
       color: #ffffff;
       padding: 10px;
       border-radius: $cardRadius;
