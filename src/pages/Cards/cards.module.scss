@@ -1,11 +1,14 @@
+:root{
+  --card-width: 250px;
+  --card-height: calc(#{var(--card-width)} / 3 * 4);
+  --card-radius: 25px;
+}
+
 .Cards {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  $cardWidth: 250px;
-  $cardHeight: calc(#{$cardWidth} / 3 * 4);
-  $cardRadius: 25px;
 
   &_single {
     position: relative;
@@ -14,21 +17,22 @@
     margin-right: 2px;
     margin-bottom: 1em;
     z-index: 10;
-    border-radius: $cardRadius;
-    height: $cardHeight;
-    width: $cardWidth;
+    border-radius: var(--card-radius);
+    height: var(--card-height);
+    width: var(--card-width);
+    filter: drop-shadow(0 0 7px rgba(#000000, .75)); // todo
 
     &__front,
     &__back {
       display: flex;
       justify-content: center;
       align-items: center;
-      //transition: transform .5s ease-in-out, opacity .5s ease-in-out;
+      transition: transform .5s ease-in-out, opacity .5s ease-in-out;
       color: #ffffff;
       padding: 10px;
-      border-radius: $cardRadius;
-      width: $cardWidth;
-      height: $cardHeight;
+      border-radius: var(--card-radius);
+      width: var(--card-width);
+      height: var(--card-height);
       background-color: #2d2d2d;
       background-repeat: no-repeat;
       background-size: cover;
@@ -49,7 +53,7 @@
     }
 
     &__front {
-      box-shadow: 0 0 7px rgba(#000000, .75);
+      //box-shadow: 0 0 7px rgba(#000000, .75);
       transform: rotateZ(0deg);
     }
 
@@ -75,14 +79,14 @@
 
   &_wrapper {
     position: relative;
-    height: $cardHeight;
-    width: $cardWidth;
+    height: var(--card-height);
+    width: var(--card-width);
   }
 
   &_deck {
     position: absolute;
-    height: $cardHeight;
-    width: $cardWidth;
+    height: var(--card-height);
+    width: var(--card-width);
     top: 0;
     left: 0;
     z-index: 5;
@@ -90,8 +94,8 @@
 
   &_deck &_single {
     position: absolute;
-    height: $cardHeight;
-    width: $cardWidth;
+    height: var(--card-height);
+    width: var(--card-width);
     top: 0;
     left: 0;
     box-shadow: rgba(#000000, .4) 0 2px 4px, rgba(#000000, .3) 0 7px 13px -3px, rgba(#000000, .2) 0 -3px 0 inset;
@@ -99,8 +103,17 @@
     &__front,
     &__back {
       box-shadow: none;
-      //background-image: url('//s5.vcdn.biz/static/f/3980028271/card-min.jpeg');
+      background-image: url('//s5.vcdn.biz/static/f/3980028271/card-min.jpeg');
     }
+  }
+
+  &_shadowContainer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
   }
 
   &_shadow {
@@ -109,26 +122,59 @@
     height: 100%;
     left: 0;
     top: 0;
-    border-radius: $cardRadius;
+    border-radius: var(--card-radius);
     color: transparent;
     z-index: 9;
 
-    &__close {
+    &__icon {
       position: absolute;
-      left: 15px;
+      left: 50%;
       top: 50%;
-      transform: translateY(-50%);
-      color: inherit;
-      font-size: 24px;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-size: 60px;
     }
+  }
 
-    &__check {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: inherit;
-      font-size: 24px;
+  &_actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    gap: 0 20px;
+
+    &__single {
+      height: 80px;
+      width: 80px;
+      border-radius: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 32px;
+      position: relative;
+
+      &:first-child {
+        background-color: #ab1c2b;
+      }
+
+      &:last-child {
+        background-color: #1cab9c;
+      }
+    }
+  }
+
+  &_finished {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    &__buttons{
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 12px;
     }
   }
 }
