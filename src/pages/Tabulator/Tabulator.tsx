@@ -1,9 +1,8 @@
 import React, {useState, useRef, memo, useCallback} from 'react';
 import {Button, Form, Input, InputRef, Tag, Typography, Select} from 'antd';
 import {PlusOutlined} from '@ant-design/icons';
-import {useDispatch} from '@redux/hooks';
 import css from '@pages/Tabulator/tabulator.module.scss';
-import {addList} from "@redux/reducers/main";
+import {ELanguageLevel, usePuter} from "../../common/hooks/usePuter.tsx";
 
 const {Text} = Typography;
 
@@ -160,13 +159,10 @@ const languages: Array<{ value: string, label: string }> = [
 ];
 
 const Tabulator: React.FC = () => {
-    const dispatch = useDispatch();
-    const [tags, setTags] = useState<string[]>([]);
+    const [tags, setTags] = useState<Array<string>>([]);
     const [inputValue, setInputValue] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
     const [editingIndex, setEditingIndex] = useState<Nullable<number>>(null);
     const inputRef = useRef<Nullable<InputRef>>(null);
-    const [isPending, setPendingStatus] = useState(false);
 
     const [form] = Form.useForm();
 
@@ -219,39 +215,16 @@ const Tabulator: React.FC = () => {
         }, 0);
     };
 
+    const [isPending, errorMessage, fetchPuter] = usePuter();
+
     const generateHandler = useCallback(async (values: { language: string }) => {
-        setPendingStatus(true);
-
-        if (window.puter && window.puter.ai) {
-            try {
-                const aiResponse = await window.puter.ai.chat(`
-            Ты помогаешь перевести список слов из массива ${tags.toString()} на язык ${values.language}. Тебе нужно вернуть JSON без комментариев и дополнений в формате:
-            {
-            "id": уникальный рандомный id в формате hex из 4 символов,
-            "name": нужно класифицировать список слов из массива ${tags.toString()}. Вернуть название на английском языке и в конце добавить один emoji флага страны ${values.language}. Без дополнений и комментариев. ,
-            "words": [
-                {
-                    "id": уникальный рандомный id в формате hex из 4 символов,
-                    "original": оригинал слова из списка по очереди,
-                    "translation": перевод слова из списка на язык ${values.language}
-                }
-            ]
-        }
-            Если слово нельзя перевести и слово допущено с ошибкой или ты не знаешь что это за слово, то в переводе "translation" поставь в строку прочерк "-"
-            `);
-
-                const generatedList = JSON.parse(aiResponse.toString());
-                dispatch(addList(generatedList));
-            } catch (error) {
-                setErrorMessage(`Error with AI: ${error}`);
-            } finally {
-                setPendingStatus(false);
-            }
-        } else {
-            setErrorMessage('Puter.js not loaded or AI service unavailable.');
-            setPendingStatus(false);
-        }
-    }, [dispatch, tags]);
+        await fetchPuter('generateFromList', {
+            tags,
+            language: values.language,
+            topic: 'Nature',
+            difficulty: ELanguageLevel.B1
+        });
+    }, [fetchPuter, tags]);
 
     return (
         <div className={css.Tabulator}>
