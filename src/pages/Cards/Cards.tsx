@@ -40,6 +40,13 @@ type Action =
     | { type: 'RESET_DECK' }
     | { type: 'RESTART_WITH_INITIAL_WORDS', payload: IListItemData[] };
 
+const dynamicFontSize = (text: string) => {
+    const baseFontSize = 32;
+    const minFontSize = 20;
+
+    return Math.max(minFontSize, baseFontSize - text.length * 0.5);
+}
+
 const flashcardReducer = (state: State, action: Action): State => {
     const {words, currentIndex, wordsToRepeat} = state;
 
@@ -284,11 +291,11 @@ const Cards: FC = () => {
                                 <CheckOutlined className={css.Cards_shadow__icon}/>}
                         </div>
                     </div>
-                    <div className={css.Cards_single__front}>
+                    <div className={css.Cards_single__front} style={{fontSize: dynamicFontSize(currentWord.original)}}>
                         {currentWord.original} <br/>
                         <span>{currentWord.info_original}</span>
                     </div>
-                    <div className={css.Cards_single__back}>
+                    <div className={css.Cards_single__back} style={{fontSize: dynamicFontSize(currentWord.translation)}}>
                         {currentWord.translation} <br/>
                         <span>{currentWord.info_translation}</span>
                     </div>

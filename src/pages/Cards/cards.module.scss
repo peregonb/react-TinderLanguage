@@ -1,4 +1,4 @@
-:root{
+:root {
   --card-width: 250px;
   --card-height: calc(#{var(--card-width)} / 3 * 4);
   --card-radius: 25px;
@@ -43,6 +43,8 @@
       font-size: 32px;
       text-align: center;
       word-break: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
 
       span {
         color: rgba(#ffffff, .5);
@@ -171,7 +173,7 @@
     justify-content: flex-start;
     align-items: flex-start;
 
-    &__buttons{
+    &__buttons {
       display: flex;
       justify-content: flex-start;
       align-items: center;
