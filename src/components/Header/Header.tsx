@@ -16,7 +16,7 @@ const HeaderButton: FC<{ triggerMenu: () => void }> = ({triggerMenu}) => {
         case '/':
             return (
                 <div className={css.Header_buttons}>
-                    <Link to={'/list'}>
+                    <Link to={'/create'}>
                         <Button
                             size={'large'}
                             type={'primary'}>

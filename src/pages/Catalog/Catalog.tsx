@@ -42,7 +42,7 @@ const Catalog: FC = () => {
                             <div className={css.Catalog_icons}>
                                 <Link
                                     className={cn(css.Catalog_icon, css.Catalog_icon_edit)}
-                                    to={`/list/${id}`}>
+                                    to={`/list-manually/${id}`}>
                                     <EditOutlined/>
                                 </Link>
                                 <Popconfirm

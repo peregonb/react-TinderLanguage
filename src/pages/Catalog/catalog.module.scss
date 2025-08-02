@@ -2,7 +2,9 @@
   &_item {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    flex-wrap: nowrap !important;
+    gap: 0 20px;
   }
 
   &_text {
@@ -10,10 +12,6 @@
     font-size: 18px;
     font-weight: 500;
     display: flex;
-    flex-grow: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   &_icons {
@@ -21,6 +19,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 0 4px;
+    flex-shrink: 0;
   }
 
   &_icon {
