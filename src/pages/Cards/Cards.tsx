@@ -114,10 +114,8 @@ const useFlashcardDeck = (initialWords: IListItemData[]) => {
     const advanceCard = useCallback((direction: 'left' | 'right') => {
         if (direction === 'left') {
             dispatch({type: 'SWIPE_LEFT'});
-            console.log('an')
         } else {
             dispatch({type: 'SWIPE_RIGHT'});
-            console.log('an')
         }
     }, []);
 
