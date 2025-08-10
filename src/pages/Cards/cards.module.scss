@@ -180,6 +180,25 @@
       gap: 12px;
     }
   }
+
+  &_progress {
+    width: 100%;
+    position: absolute;
+    height: 3px;
+    left: 0;
+    bottom: 0;
+    background-color: #1cab9c;
+    overflow: hidden;
+
+    &_bar {
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background-color: #ab1c2b;
+      transition: width $t;
+    }
+  }
 }
 
 html, body {

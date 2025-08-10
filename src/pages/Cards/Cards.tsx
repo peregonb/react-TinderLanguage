@@ -47,6 +47,13 @@ const dynamicFontSize = (text: string) => {
     return Math.max(minFontSize, baseFontSize - text.length * 0.5);
 }
 
+const getRatio = (a: number, b: number): number => {
+    if (a === 0 && b === 0) return 50;
+
+    const total = a + b;
+    return (a / total) * 100;
+};
+
 const flashcardReducer = (state: State, action: Action): State => {
     const {words, currentIndex, wordsToRepeat} = state;
 
@@ -107,8 +114,10 @@ const useFlashcardDeck = (initialWords: IListItemData[]) => {
     const advanceCard = useCallback((direction: 'left' | 'right') => {
         if (direction === 'left') {
             dispatch({type: 'SWIPE_LEFT'});
+            console.log('an')
         } else {
             dispatch({type: 'SWIPE_RIGHT'});
+            console.log('an')
         }
     }, []);
 
@@ -116,12 +125,20 @@ const useFlashcardDeck = (initialWords: IListItemData[]) => {
         dispatch({type: 'RESTART_WITH_INITIAL_WORDS', payload: initialWords});
     }, [initialWords]);
 
+    const deckCount = max(0, state.words.length - state.currentIndex - 1);
+    const wrongCards = state.wordsToRepeat.length;
+    const correctCards = (state.words.length - (deckCount + 1)) - wrongCards;
+    const successRate = getRatio(wrongCards, correctCards);
+
     return {
         currentWord: state.words[state.currentIndex],
-        deckCount: max(0, state.words.length - state.currentIndex - 1),
         isFinished: state.isFinished,
+        deckCount,
         advanceCard,
-        restartDeck
+        restartDeck,
+        successRate,
+        correctCards,
+        wrongCards
     };
 };
 
@@ -146,7 +163,8 @@ const useSwipe = ({onSwipeEnd, threshold = SWIPE_THRESHOLD}: {
         if (abs(touchDifference) >= threshold) {
             onSwipeEnd(touchDifference > 0 ? 'right' : 'left');
         }
-        setTouchDifference(0);
+
+        setTouchDifference(0); // set
     }, [touchDifference, threshold, onSwipeEnd]);
 
     const swipeHandlers = {
@@ -198,7 +216,7 @@ const Cards: FC = () => {
         }
     }, [initialWords, params.listId, history]);
 
-    const {currentWord, deckCount, isFinished, advanceCard, restartDeck} = useFlashcardDeck(initialWords);
+    const {currentWord, deckCount, isFinished, advanceCard, restartDeck, successRate} = useFlashcardDeck(initialWords);
 
     const handleSwipeEnd = useCallback((direction: 'left' | 'right') => {
         setIsCardFlipped(false);
@@ -214,7 +232,7 @@ const Cards: FC = () => {
 
         const timer = setTimeout(() => {
             handleSwipeEnd(animationTrigger);
-            setAnimationTrigger(null);
+            setAnimationTrigger(null); // set
         }, animationDuration);
 
         return () => clearTimeout(timer);
@@ -279,7 +297,7 @@ const Cards: FC = () => {
                     className={cn(css.Cards_single, {[css.Cards_single_active]: isCardFlipped})}
                     style={cardDynamicStyles}
                     {...swipeHandlers}
-                    onClick={() => !animationTrigger && setIsCardFlipped(val => !val)} // Блокируем клик во время анимации
+                    onClick={() => !animationTrigger && setIsCardFlipped(val => !val)}
                 >
                     <div
                         className={css.Cards_shadowContainer}
@@ -295,7 +313,8 @@ const Cards: FC = () => {
                         {currentWord.original} <br/>
                         <span>{currentWord.info_original}</span>
                     </div>
-                    <div className={css.Cards_single__back} style={{fontSize: dynamicFontSize(currentWord.translation)}}>
+                    <div className={css.Cards_single__back}
+                         style={{fontSize: dynamicFontSize(currentWord.translation)}}>
                         {currentWord.translation} <br/>
                         <span>{currentWord.info_translation}</span>
                     </div>
@@ -318,6 +337,9 @@ const Cards: FC = () => {
                 >
                     <CheckOutlined/>
                 </button>
+            </div>
+            <div className={css.Cards_progress}>
+                <div className={css.Cards_progress_bar} style={{width: `${successRate}%`}}></div>
             </div>
 
             <style>
