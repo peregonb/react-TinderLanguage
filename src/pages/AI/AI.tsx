@@ -22,10 +22,12 @@ const AI: FC = () => {
                 onFinish={generateHandler}
                 className={css.AI_form}
                 autoComplete={'off'}
+                layout={'vertical'}
             >
                 <Form.Item
                     name={'language_original'}
                     className={css.AI_formItem}
+                    layout={'vertical'}
                     label={'Select original language'}
                     required={false}
                     rules={[{required: true, message: 'Please, select an original language'}]}
@@ -42,6 +44,7 @@ const AI: FC = () => {
                 <Form.Item
                     name={'language_translation'}
                     className={css.AI_formItem}
+                    layout={'vertical'}
                     label={'Select translation language'}
                     required={false}
                     rules={[{required: true, message: 'Please, select a translation language'}]}
@@ -58,6 +61,7 @@ const AI: FC = () => {
                 <Form.Item
                     name={'language_level'}
                     className={css.AI_formItem}
+                    layout={'vertical'}
                     label={'Select preferable language level'}
                     required={false}
                     rules={[{required: true, message: 'Please, select a preferable language level'}]}
@@ -74,6 +78,7 @@ const AI: FC = () => {
                 <Form.Item
                     name={'language_list_limit'}
                     className={css.AI_formItem}
+                    layout={'vertical'}
                     label={'How many words should be in the list?'}
                     required={false}
                     rules={[{required: true, message: 'Please, select a preferable list length'}]}
@@ -89,6 +94,7 @@ const AI: FC = () => {
                 <Form.Item
                     name={'topic'}
                     className={css.AI_formItem}
+                    layout={'vertical'}
                     label={'What topic should the list be about?'}
                     required={false}
                     rules={[{required: true, message: 'Please, enter list topic'}]}
