@@ -18,7 +18,7 @@ import {mainRootSelectors} from '@redux/reducers/main/selectors';
 import css from '@pages/Cards/cards.module.scss';
 import cn from 'classnames';
 import {Button} from "antd";
-import {clipCorners} from "../../common/helpers.ts";
+import {clipCorners, dynamicFontSize, getRatio} from "../../common/helpers.ts";
 
 // ------
 const SWIPE_THRESHOLD = 50;
@@ -39,20 +39,6 @@ type Action =
     | { type: 'SWIPE_LEFT' }
     | { type: 'RESET_DECK' }
     | { type: 'RESTART_WITH_INITIAL_WORDS', payload: IListItemData[] };
-
-const dynamicFontSize = (text: string) => {
-    const baseFontSize = 32;
-    const minFontSize = 20;
-
-    return Math.max(minFontSize, baseFontSize - text.length * 0.5);
-}
-
-const getRatio = (a: number, b: number): number => {
-    if (a === 0 && b === 0) return 50;
-
-    const total = a + b;
-    return (a / total) * 100;
-};
 
 const flashcardReducer = (state: State, action: Action): State => {
     const {words, currentIndex, wordsToRepeat} = state;

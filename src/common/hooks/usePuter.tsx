@@ -1,31 +1,50 @@
 import {useCallback, useState} from "react";
 import {useDispatch} from '@redux/hooks';
 import {addList} from "@redux/reducers/main";
-import {getUniqID} from "../helpers.ts";
+import {ELanguageLevel, getUniqID} from "../helpers.ts";
 import {IListItemSingle} from "@redux/reducers/main/types.ts";
 import {useHistory} from "react-router-dom";
 
-export type IGenerateType = 'generateFromScratch' | 'generateFromList';
-
-export enum ELanguageLevel {
-    A1 = 'A1',
-    A2 = 'A2',
-    B1 = 'B1',
-    B2 = 'B2',
-    C1 = 'C1',
-    C2 = 'C2',
+export interface IFromScratch {
+    language_original: string;
+    language_translation: string;
+    language_level: ELanguageLevel;
+    language_list_length: string;
+    topic: string;
 }
 
-type IPuterData = {
-    tags: Array<string>,
-    language: string,
-    topic: string,
-    difficulty: ELanguageLevel
+interface IFromList {
+    tags: Array<string>;
+    language: string;
 }
 
-const puterPrompt = {
-    generateFromScratch: () => '',
-    generateFromList: ({tags, language}: { tags: IPuterData['tags'], language: IPuterData['language'] }) => `
+interface IEntityMap {
+    generateFromScratch: IFromScratch;
+    generateFromList: IFromList;
+}
+
+const puterPrompt: { [K in keyof IEntityMap]: (data: IEntityMap[K]) => string } = {
+    generateFromScratch: ({
+                              language_original,
+                              language_translation,
+                              topic,
+                              language_level,
+                              language_list_length
+                          }) => {
+        const [minLength, maxLength] = language_list_length.split(' - ');
+        return `
+                          Ты помогаешь составить json объект с набором слов на определенную тематику и переводом этих слов. Тебе нужно вернуть JSON без комментариев, без обертки \`\`\`json и дополнений в формате:
+                          {
+                            "name" : лаконичное обобщение тематики ${topic} и в конце добавить один emoji флага страны ${language_original} и один emoji флага страны ${language_translation}. Без дополнений и комментариев.
+                            "words": [
+                                "original": слово на языке ${language_original} преимущественно уровня знания языка ${language_level} на тематику ${topic},
+                                "translation": перевеод слова на язык ${language_translation} преимущественно уровня знания языка ${language_level}
+                            ]
+                          }
+                           Количетсво слов в массиве words должно быть обязательно минимум ${minLength} но не более ${maxLength}, слова не должны повторяться и должны быть преимущественно уровня ${language_level} за исключением слов где это невозможно
+                          `
+    },
+    generateFromList: ({tags, language}) => `
             Ты помогаешь перевести список слов из массива ${tags.toString()} на язык ${language}. Тебе нужно вернуть JSON без комментариев, без обертки \`\`\`json и дополнений в формате:
             {
             "name": нужно класифицировать список слов из массива ${tags.toString()}. Вернуть название на английском языке и в конце добавить один emoji флага страны ${language}. Без дополнений и комментариев. ,
@@ -60,7 +79,7 @@ export const usePuter = () => {
     const history = useHistory();
 
     const fetchPuter = useCallback(
-        async (type: IGenerateType, data: IPuterData) => {
+        async <T extends keyof IEntityMap>(type: T, data: IEntityMap[T]) => {
             setPendingStatus(true);
             setErrorMessage('');
 
@@ -71,9 +90,10 @@ export const usePuter = () => {
             }
 
             try {
-                const prompt = puterPrompt[type]({tags: data.tags, language: data.language});
+                const prompt = puterPrompt[type](data);
+
                 const aiResponse = await window.puter.ai.chat(prompt, {
-                    model: 'o1-mini'
+                    model: 'gpt-5-mini'
                 });
 
                 const generatedList = JSON.parse(aiResponse.toString());
@@ -83,7 +103,8 @@ export const usePuter = () => {
 
                 history.push(`/list-manually/${listWithIds.id}`);
             } catch (error) {
-                setErrorMessage(`Error with AI: ${JSON.stringify(error)}`);
+                const errorMessage = error instanceof Error ? error.message : JSON.stringify(error);
+                setErrorMessage(`Error with AI: ${errorMessage}`);
             } finally {
                 setPendingStatus(false);
             }
