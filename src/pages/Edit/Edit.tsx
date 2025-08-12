@@ -192,7 +192,7 @@ const Edit: FC = () => {
                             name={el}>
                             <Input
                                 size={'large'}
-                                placeholder={`For ${el.split('_')[0]}`}/>
+                                placeholder={`For ${el.split('_')[1]}`}/>
                         </Form.Item>
                     ))
                 }
