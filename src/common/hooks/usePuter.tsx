@@ -9,7 +9,7 @@ export interface IFromScratch {
     language_original: string;
     language_translation: string;
     language_level: ELanguageLevel;
-    language_list_length: string;
+    language_list_limit: string;
     topic: string;
 }
 
@@ -29,9 +29,9 @@ const puterPrompt: { [K in keyof IEntityMap]: (data: IEntityMap[K]) => string } 
                               language_translation,
                               topic,
                               language_level,
-                              language_list_length
+                              language_list_limit
                           }) => {
-        const [minLength, maxLength] = language_list_length.split(' - ');
+        const [minLength, maxLength] = language_list_limit.split(' - ');
         return `
                           Ты помогаешь составить json объект с набором слов на определенную тематику и переводом этих слов. Тебе нужно вернуть JSON без комментариев, без обертки \`\`\`json и дополнений в формате:
                           {

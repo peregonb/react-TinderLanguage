@@ -112,7 +112,7 @@ const AI: FC = () => {
                     size={'large'}
                     {...(isPending ? {loading: true} : {})}
                 >
-                    {isPending ? 'Generating list...' : 'Generate list'}
+                    {isPending ? 'Generating list, please wait...' : 'Generate list'}
                 </Button>
                 {!!errorMessage.length && <Text type="danger">{errorMessage}</Text>}
             </div>
