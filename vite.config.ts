@@ -22,33 +22,35 @@ export default defineConfig({
     },
     plugins: [react()],
     build: {
-        rollupOptions: {
-            output: {
-                manualChunks(id) {
-                    const antd = {
-                        antd_color_picker: "antd/es/color-picker",
-                        antd_form: "antd/es/form",
-                        antd_modal: "antd/es/modal",
-                        antd_typography: "antd/es/typography",
-                        antd_table: "antd/es/table",
-                        antd_select: "antd/es/select",
-                    };
+        // rollupOptions: {
+        //     output: {
+        //         manualChunks(id) {
+        //             const antd = {
+        //                 antd_color_picker: "antd/es/color-picker",
+        //                 antd_form: "antd/es/form",
+        //                 antd_modal: "antd/es/modal",
+        //                 antd_typography: "antd/es/typography",
+        //                 antd_table: "antd/es/table",
+        //                 antd_select: "antd/es/select",
+        //             };
+        //
+        //             for (const key in antd) {
+        //                 if (id.includes(antd[key as keyof typeof antd])) {
+        //                     return key;
+        //                 }
+        //             }
+        //
+        //             if (id.includes("antd/es")) {
+        //                 return "antd_rest";
+        //             }
+        //
+        //             if (id.includes("@ant-design")) {
+        //                 return "antd_assets";
+        //             }
+        //         },
+        //     },
+        // },
 
-                    for (const key in antd) {
-                        if (id.includes(antd[key as keyof typeof antd])) {
-                            return key;
-                        }
-                    }
-
-                    if (id.includes("antd/es")) {
-                        return "antd_rest";
-                    }
-
-                    if (id.includes("@ant-design")) {
-                        return "antd_assets";
-                    }
-                },
-            },
-        },
+        // todo split chunks
     },
 })
